@@ -1,0 +1,54 @@
+# Prerequisites / Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.pdb
+*.obj
+*.res
+*.ilk
+*.lib
+*.exp
+*.idb
+
+# Visual Studio & MSVC
+.vs/
+*.sln.docstates
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+Debug/
+Release/
+x64/
+x86/
+ARM/
+ARM64/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+build/
+bin/
+out/
+
+# Python & Tests
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+test_runner.exe
+
+# OS & Logs
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+desktop.ini
