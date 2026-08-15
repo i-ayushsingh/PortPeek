@@ -70,7 +70,7 @@ def generate_full_size_ico(src_path: Path, dst_path: Path, sizes=(16, 20, 24, 32
         print(f"[+] Successfully generated: {dst_path} ({dst_path.stat().st_size:,} bytes)")
 
 def main():
-    root_dir = Path("c:/Projects/PortPeak")
+    root_dir = Path(__file__).resolve().parent
     res_dir = root_dir / "res"
     appicon_src = root_dir / "appicon.png"
 
