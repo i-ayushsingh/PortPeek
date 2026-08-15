@@ -1,0 +1,27 @@
+{
+    "version": "1.0.0",
+    "description": "Ultra-fast native Windows system-tray utility to inspect local listening ports and jump to localhost in 1-click.",
+    "homepage": "https://github.com/i-ayushsingh/PortPeek",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/i-ayushsingh/PortPeek/releases/download/v1.0.0/PortPeek.exe",
+            "hash": "99f5dabaace746a1cf9c3014c14a5aa4b88d98283ffc39ccf7310bc1c9fb4a20"
+        }
+    },
+    "bin": "PortPeek.exe",
+    "shortcuts": [
+        [
+            "PortPeek.exe",
+            "PortPeek"
+        ]
+    ],
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/i-ayushsingh/PortPeek/releases/download/v$version/PortPeek.exe"
+            }
+        }
+    }
+}
