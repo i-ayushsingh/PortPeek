@@ -42,21 +42,11 @@
 
 ---
 
-## 📥 Quick Download & Install
+## 📥 Quick Download & Start
 
-### Option A: Standalone Portable EXE *(Easiest)*
 1. Go to **[Releases](https://github.com/i-ayushsingh/PortPeek/releases)**.
 2. Download **`PortPeek.exe`**.
 3. Place it anywhere and double-click to run. *Zero install, zero setup, zero dependencies.*
-
-### Option B: Windows Package Managers *(Coming Soon)*
-```powershell
-# Via Winget
-winget install PortPeek
-
-# Via Scoop
-scoop install portpeek
-```
 
 > 💡 **Pro-Tip:** Once running, click `Preferences ▶ Start with Windows` to have PortPeek silently available every time your PC boots!
 
