@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Port 3000 (Next.js & React) — What is Running on Localhost:3000? | PortPeek</title>
+  
+  <meta name="description" content="Detailed developer guide to Port 3000 (Next.js / React / Nuxt / Express). Learn what process uses port 3000, how it works, how to fix EADDRINUSE conflicts, and stop owning processes." />
+  <meta name="keywords" content="port 3000, localhost:3000, next.js & react, fix port 3000, EADDRINUSE 3000, windows dev ports, portpeek" />
+  <link rel="canonical" href="https://i-ayushsingh.github.io/PortPeek/ports/3000/" />
+  
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Port 3000 — Next.js / React / Nuxt / Express | PortPeek" />
+  <meta property="og:description" content="What is running on localhost:3000? Deep dive into Next.js & React, protocol details, conflict fixes, and 1-click port inspection." />
+  <meta property="og:url" content="https://i-ayushsingh.github.io/PortPeek/ports/3000/" />
+  <meta property="og:image" content="../../appicon.png" />
+  <meta property="og:type" content="article" />
+  
+  <link rel="icon" type="image/png" href="../../appicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable+Static:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  
+  <!-- JSON-LD Schema Markup for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "What is Port 3000? Localhost Development Guide",
+    "description": "The quintessential localhost development server port for modern web engineering. Default choice for Next.js, Create React App, Nuxt.js (Vue), Grafana, Remix, and Node.js web frameworks.",
+    "articleSection": "Developer Networking",
+    "url": "https://i-ayushsingh.github.io/PortPeek/ports/3000/",
+    "author": {
+      "@type": "Organization",
+      "name": "PortPeek"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+    <!-- UNIFIED APPLE / ARC TOPBAR -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="../../index.html" class="nav-brand">
+        <img src="../../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
+        <span>PortPeek</span>
+        <span class="nav-badge-ver">v1.0</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="../../index.html" class="nav-link">Product</a>
+        <a href="../../simulator/index.html" class="nav-link">Simulator</a>
+        <a href="../../ports/index.html" class="nav-link active">Ports</a>
+        <a href="../../conflicts/index.html" class="nav-link">Conflicts</a>
+        <a href="../../knowledge/index.html" class="nav-link">Knowledge</a>
+        <a href="../../inside/index.html" class="nav-link">Inside</a>
+        <a href="../../blog/index.html" class="nav-link">Blog</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/i-ayushsingh/PortPeek" target="_blank" rel="noopener noreferrer" class="btn-nav-github" title="View on GitHub">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" rel="noopener noreferrer" class="btn-nav-download">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.551H10.949M0 12.6h9.75V22.05L0 20.701M10.949 12.6H24V24l-13.051-1.8z"/></svg>
+          <span>Download</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN ARTICLE -->
+  <main class="page-container">
+    <div class="container">
+      
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="../index.html">Ports Directory</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Port 3000</span>
+      </nav>
+
+      <!-- Port Hero Header -->
+      <div class="port-hero-card">
+        <div class="port-hero-top">
+          <div class="port-hero-badge">
+            <span class="port-hero-number">3000</span>
+            <span class="port-hero-proto">TCP</span>
+          </div>
+          <div class="port-hero-info">
+            <div class="port-hero-tags">
+              <span class="tag-pill" style="border-color: #0070f350; color: #0070f3; background: #0070f315;">Full-Stack & SSR</span>
+              <span class="tag-pill tag-iana">Unassigned / De-facto Dev Standard</span>
+            </div>
+            <h1 class="port-hero-title">Port 3000 — Next.js / React / Nuxt / Express</h1>
+            <p class="port-hero-sub">The quintessential localhost development server port for modern web engineering. Default choice for Next.js, Create React App, Nuxt.js (Vue), Grafana, Remix, and Node.js web frameworks.</p>
+          </div>
+        </div>
+
+        <!-- Quick Specs Grid -->
+        <div class="specs-grid">
+          <div class="spec-box">
+            <span class="spec-label">Default Protocol</span>
+            <span class="spec-value">TCP / IP</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-label">Typical Localhost URL</span>
+            <span class="spec-value code-value"><a href="http://localhost:3000" target="_blank" rel="noopener">http://localhost:3000</a></span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-label">Default Process</span>
+            <span class="spec-value code-value">node.exe</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-label">Primary Framework</span>
+            <span class="spec-value">Next.js & React</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Layout with Sidebar -->
+      <div class="content-layout">
+        <article class="article-main">
+          
+          <section class="doc-section">
+            <h2>1. What is Port 3000?</h2>
+            <p>Port 3000 is the undisputed default development port for JavaScript full-stack ecosystems. When you run `npm run dev` in a Next.js or React application, the Node.js runtime creates a TCP listening socket bound to IPv4 `127.0.0.1:3000` or IPv6 `[::1]:3000`.</p>
+            <p>In early Node.js tutorials and Express examples (circa 2011), port 3000 was widely chosen because port numbers below 1024 require elevated root/administrator privileges on Unix systems. Port 3000 is high enough to avoid privileged access, sits well below the dynamic/ephemeral range (49152–65535), and has no conflicting core system service assignments in the official IANA registry.</p>
+          </section>
+
+          <section class="doc-section">
+            <h2>2. How Port 3000 Works Under the Hood</h2>
+            <div class="architecture-box">
+              <div class="pipeline-step">
+                <span class="step-num">1</span>
+                <div>
+                  <strong>Socket Creation & Binding</strong>
+                  <p>Process creates a Winsock socket (`AF_INET`/`AF_INET6`, `SOCK_STREAM`) and binds to local port 3000.</p>
+                </div>
+              </div>
+              <div class="pipeline-step">
+                <span class="step-num">2</span>
+                <div>
+                  <strong>Kernel TCP Listener Table</strong>
+                  <p>Windows TCP/IP stack records the listening state in `MIB_TCPTABLE_OWNER_PID`.</p>
+                </div>
+              </div>
+              <div class="pipeline-step">
+                <span class="step-num">3</span>
+                <div>
+                  <strong>Request Handling & Loopback Dispatch</strong>
+                  <p>Inbound HTTP/TCP traffic to `127.0.0.1:3000` is delivered directly through Windows loopback with zero physical NIC overhead.</p>
+                </div>
+              </div>
+            </div>
+            <p style="margin-top: 16px;">When a Next.js development server launches on Windows:
+1. `node.exe` invokes the Win32 Winsock API `socket()` followed by `bind()` to associate the socket with `0.0.0.0:3000` or `127.0.0.1:3000`.
+2. It executes `listen()` with a TCP connection backlog queue.
+3. Windows kernel writes an entry into the system TCP listener table (`MIB_TCPTABLE_OWNER_PID`).
+4. Incoming HTTP requests trigger an `accept()` loop and are dispatched to the Next.js compilation/Webpack/Turbopack dev server.
+5. Hot Module Replacement (HMR) maintains a persistent WebSocket connection over the same port to push incremental code updates to your browser.</p>
+          </section>
+
+          <section class="doc-section">
+            <h2>3. Common Conflicts & 'Error: listen EADDRINUSE: address already in use :::3000'</h2>
+            <div class="callout-box error-callout">
+              <div class="callout-title">⚠️ Common Error Message</div>
+              <code>Error: listen EADDRINUSE: address already in use :::3000</code>
+            </div>
+            <p>Because port 3000 is used by hundreds of libraries (Next.js, Create React App, Nuxt, Remix, Rails puma, Puma, Grafana), developers frequently suffer from `EADDRINUSE` errors. 
+
+This usually happens when:
+- A terminal tab or VS Code window was closed without gracefully sending `SIGINT` (Ctrl+C).
+- A child Node.js worker process got orphaned in the background.
+- Another project (e.g. Grafana or a previous client frontend) is still running.
+
+When Next.js encounters a taken port 3000, it prints `Port 3000 is in use, trying 3001 instead`. While convenient, this causes subtle bugs: third-party OAuth providers (Google, GitHub) configured with callback `http://localhost:3000/api/auth/callback` will fail with redirect URI mismatch errors!</p>
+            <div class="tip-box">
+              <strong>💡 Pro Tip:</strong> Next.js automatically increments to port 3001 if 3000 is occupied, which can break OAuth redirects, webhook callbacks, or strict CORS allowlists.
+            </div>
+          </section>
+
+          <section class="doc-section">
+            <h2>4. How to Find & Stop the Process on Port 3000</h2>
+            <p>If port 3000 is locked by an orphaned process or background service, choose one of the following methods:</p>
+
+            <div class="comparison-tabs">
+              <div class="tab-header">
+                <span class="tab-btn active">Terminal Commands (Manual)</span>
+                <span class="tab-btn highlight">PortPeek (1-Click Instant)</span>
+              </div>
+              <div class="tab-content">
+                <p><strong>PowerShell (Recommended):</strong></p>
+                <div class="code-terminal">
+                  <code>Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess | Stop-Process -Force</code>
+                  <button class="btn-copy-code" onclick="copySnippet('Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess | Stop-Process -Force', this)">Copy</button>
+                </div>
+
+                <p style="margin-top: 14px;"><strong>Classic CMD (Command Prompt):</strong></p>
+                <div class="code-terminal">
+                  <code>for /f "tokens=5" %a in ('netstat -aon ^| findstr :3000') do taskkill /f /pid %a</code>
+                  <button class="btn-copy-code" onclick="copySnippet('for /f "tokens=5" %a in ('netstat -aon ^| findstr :3000') do taskkill /f /pid %a', this)">Copy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="portpeek-solution-box">
+              <div class="solution-header">
+                <img src="../../appicon.png" alt="PortPeek" class="solution-icon" />
+                <div>
+                  <h3>Or simply use PortPeek</h3>
+                  <p>Never memorize netstat flags or parse PIDs again.</p>
+                </div>
+              </div>
+              <div class="solution-steps">
+                <div class="solution-step">1. Press <kbd>Win</kbd> + <kbd>Alt</kbd> + <kbd>P</kbd> anywhere on Windows.</div>
+                <div class="solution-step">2. See <strong>Port 3000</strong> with its owning process (node.exe) and memory usage.</div>
+                <div class="solution-step">3. Click <strong>Stop Process</strong> to kill it instantly, or click the item to launch in your browser.</div>
+              </div>
+              <a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" class="btn-solution-cta">Download PortPeek (Free & Open Source)</a>
+            </div>
+          </section>
+
+          <section class="doc-section">
+            <h2>5. Standards & Related Ports</h2>
+            <div class="related-ports-container">
+              <p><strong>Related Ports:</strong></p>
+              <div class="related-pills">
+                <span class="related-pill-static">Port 3001</span><a href="../5173/" class="related-pill">Port 5173</a><a href="../8000/" class="related-pill">Port 8000</a><a href="../8080/" class="related-pill">Port 8080</a>
+              </div>
+            </div>
+            <div class="references-box">
+              <p><strong>Official Specifications:</strong></p>
+              <ul>
+                <li>IANA Service Name and Transport Protocol Port Number Registry</li>
+                <li>RFC 793 (Transmission Control Protocol), RFC 6335</li>
+                <li>Windows Sockets 2 (Winsock) API Documentation</li>
+              </ul>
+            </div>
+          </section>
+
+        </article>
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar-sticky">
+          <div class="sidebar-card">
+            <h4>On This Page</h4>
+            <ul class="sidebar-toc">
+              <li><a href="#what-is-port">1. What is Port 3000?</a></li>
+              <li><a href="#how-it-works">2. How it Works Under the Hood</a></li>
+              <li><a href="#conflicts">3. Common Conflicts & Errors</a></li>
+              <li><a href="#troubleshooting">4. Find & Stop Owning Process</a></li>
+              <li><a href="#standards">5. Standards & Related Ports</a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-card download-promo">
+            <img src="../../appicon.png" alt="PortPeek" width="40" height="40" />
+            <h4>PortPeek for Windows</h4>
+            <p>Inspect and control port 3000 directly from your taskbar.</p>
+            <a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" class="btn-sidebar-download">Download ~500 KB</a>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+    <!-- UNIFIED 5-COLUMN MEGA FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../../index.html" class="nav-brand">
+            <img src="../../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
+            <span>PortPeek</span>
+            <span class="nav-badge-ver">v1.0</span>
+          </a>
+          <p>Ultra-lightweight native Windows system-tray utility for local development servers. Built with Win32 &amp; C++17.</p>
+          <div style="font-size:0.8rem; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">
+            <span>⚡ Standalone Target: ~500 KB</span>
+            <span>🧠 Memory Footprint: &lt; 8 MB</span>
+            <span>🛡️ 100% Offline &amp; Private</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Navigation</h5>
+          <ul class="footer-col-links">
+            <li><a href="../../index.html">Product Overview</a></li>
+            <li><a href="../../simulator/index.html">Windows 11 Simulator</a></li>
+            <li><a href="../../conflicts/index.html">Conflict Solver</a></li>
+            <li><a href="../../ports/index.html">Ports Directory (40+)</a></li>
+            <li><a href="../../knowledge/index.html">Knowledge Hub</a></li>
+            <li><a href="../../inside/index.html">Inside Architecture</a></li>
+            <li><a href="../../blog/index.html">Engineering Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Popular Ports</h5>
+          <ul class="footer-col-links">
+            <li><a href="../../ports/3000/index.html">Port 3000 (Next.js)</a></li>
+            <li><a href="../../ports/5173/index.html">Port 5173 (Vite)</a></li>
+            <li><a href="../../ports/5432/index.html">Port 5432 (Postgres)</a></li>
+            <li><a href="../../ports/6379/index.html">Port 6379 (Redis)</a></li>
+            <li><a href="../../ports/8000/index.html">Port 8000 (FastAPI)</a></li>
+            <li><a href="../../ports/8080/index.html">Port 8080 (Spring)</a></li>
+            <li><a href="../../ports/11434/index.html">Port 11434 (Ollama)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Standards &amp; Docs</h5>
+          <ul class="footer-col-links">
+            <li><a href="../../knowledge/index.html#quad-tuple">TCP Socket Anatomy</a></li>
+            <li><a href="../../knowledge/index.html#loopback">127.0.0.1 vs 0.0.0.0</a></li>
+            <li><a href="../../knowledge/index.html#time-wait">TIME_WAIT Diagnostics</a></li>
+            <li><a href="../../knowledge/index.html#mobile">Mobile Wi-Fi Testing</a></li>
+            <li><a href="../../inside/index.html#pipeline">Direct Win32 Kernel Query</a></li>
+            <li><a href="../../inside/index.html#security">Least Privilege Security</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Open Source</h5>
+          <ul class="footer-col-links">
+            <li><a href="https://github.com/i-ayushsingh/PortPeek" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" rel="noopener noreferrer">Latest Release</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/issues" target="_blank" rel="noopener noreferrer">Report an Issue</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 PortPeek. Open-source under MIT License.</span>
+        <span>Crafted with precision for Windows developers.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function copySnippet(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = "Copied!";
+        btn.style.color = "#22c55e";
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.color = "";
+        }, 1800);
+      });
+    }
+  </script>
+</body>
+</html>

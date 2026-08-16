@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer Ports Directory & Encyclopedia — PortPeek</title>
+  
+  <meta name="description" content="Curated encyclopedia of 40+ localhost development ports. Default ports for Next.js, Vite, FastAPI, PostgreSQL, Redis, Ollama, Spring Boot, and instant conflict resolution." />
+  <meta name="keywords" content="developer ports directory, localhost port list, port 3000 nextjs, port 5173 vite, port 8000 fastapi, port 5432 postgres, port 6379 redis, port 11434 ollama" />
+  <link rel="canonical" href="https://i-ayushsingh.github.io/PortPeek/ports/" />
+  
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Developer Ports Directory & Encyclopedia | PortPeek" />
+  <meta property="og:description" content="Explore default localhost development ports for modern frameworks, databases, and AI models. Comprehensive reference with 1-click launch & conflict resolution." />
+  <meta property="og:image" content="../appicon.png" />
+  <meta property="og:url" content="https://i-ayushsingh.github.io/PortPeek/ports/" />
+  <meta property="og:type" content="website" />
+  
+  <link rel="icon" type="image/png" href="../appicon.png" />
+  <link rel="shortcut icon" href="../favicon.ico" />
+  
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+  <!-- UNIFIED APPLE / ARC TOPBAR -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="nav-brand">
+        <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
+        <span>PortPeek</span>
+        <span class="nav-badge-ver">v1.0</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="../index.html">Product</a>
+        <a href="../simulator/index.html" class="nav-link">Simulator</a>
+        <a href="../ports/index.html" class="nav-link active">Ports</a>
+        <a href="../conflicts/index.html" class="nav-link">Conflicts</a>
+        <a href="../knowledge/index.html" class="nav-link">Knowledge</a>
+        <a href="../inside/index.html" class="nav-link">Inside</a>
+        <a href="../blog/index.html" class="nav-link">Blog</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/i-ayushsingh/PortPeek" target="_blank" rel="noopener noreferrer" class="btn-nav-github" title="View on GitHub">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" rel="noopener noreferrer" class="btn-nav-download">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.551H10.949M0 12.6h9.75V22.05L0 20.701M10.949 12.6H24V24l-13.051-1.8z"/></svg>
+          <span>Download</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <div class="container">
+      
+      <!-- BREADCRUMBS -->
+      <nav class="breadcrumb-nav">
+        <a href="../index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Ports Directory</span>
+      </nav>
+
+      <!-- DIRECTORY HERO -->
+      <div class="section-header" style="margin-bottom: 36px;">
+        <div class="hero-pill" style="margin-bottom: 16px;">
+          <span class="hero-pill-dot"></span>
+          <span>⚡ Authoritative Developer Port Registry</span>
+        </div>
+        <h1 class="section-title">
+          Developer <span class="gradient-text">Port Encyclopedia</span>
+        </h1>
+        <p class="section-desc">
+          Explore standard localhost development ports, common framework bindings, IANA registration statuses, and 1-click conflict solutions.
+        </p>
+      </div>
+
+      <!-- ARC OMNIBOX SEARCH -->
+      <div class="dir-search-wrap">
+        <svg class="dir-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input 
+          type="search" 
+          id="portSearchInput" 
+          class="dir-search-input" 
+          placeholder="Search by port (e.g. 3000), framework (Vite), process (node.exe), or service..." 
+          autocomplete="off"
+          aria-label="Search ports"
+        />
+      </div>
+
+      <!-- QUICK PRESET PILLS -->
+      <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;">
+        <span style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; margin-right: 4px;">Quick Search:</span>
+        <button class="preset-search-btn" data-search="3000">Next.js :3000</button>
+        <button class="preset-search-btn" data-search="5173">Vite :5173</button>
+        <button class="preset-search-btn" data-search="8000">FastAPI :8000</button>
+        <button class="preset-search-btn" data-search="5432">PostgreSQL :5432</button>
+        <button class="preset-search-btn" data-search="6379">Redis :6379</button>
+        <button class="preset-search-btn" data-search="11434">Ollama :11434</button>
+        <button class="preset-search-btn" data-search="8080">Spring Boot :8080</button>
+      </div>
+
+      <!-- FILTER BAR & VIEW TOGGLES -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <button class="filter-btn active" data-filter="all">All Ports (<span id="countAll">34</span>)</button>
+          <button class="filter-btn" data-filter="frontend">🌐 Frontend &amp; Bundlers</button>
+          <button class="filter-btn" data-filter="backend">⚙️ Backend &amp; APIs</button>
+          <button class="filter-btn" data-filter="database">🗄️ Databases &amp; Caching</button>
+          <button class="filter-btn" data-filter="ai">🤖 AI / LLMs</button>
+          <button class="filter-btn" data-filter="system">📦 System &amp; DevOps</button>
+        </div>
+
+        <div class="view-switcher">
+          <button class="btn-view-toggle active" id="btnViewGrid" title="Grid View" aria-label="Grid View">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="btn-view-toggle" id="btnViewTable" title="Table View" aria-label="Table View">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- PORT CARDS GRID CONTAINER -->
+      <div class="port-grid" id="portsGrid">
+        <!-- Rendered dynamically by app.js with developer-first priority -->
+      </div>
+
+      <!-- TABLE VIEW CONTAINER -->
+      <div class="ports-table-wrap" id="portsTableWrap" style="display: none;">
+        <table class="ports-table">
+          <thead>
+            <tr>
+              <th>Port</th>
+              <th>Framework / Service</th>
+              <th>Category</th>
+              <th>Protocol</th>
+              <th>IANA Status</th>
+              <th>Default Start Command</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="portsTableBody">
+            <!-- Rendered dynamically by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- BOTTOM CONFLICT CALLOUT -->
+      <div class="portpeek-solution-box" style="margin: 48px 0 24px;">
+        <div class="solution-header">
+          <img src="../appicon.png" alt="PortPeek Icon" class="solution-icon" />
+          <div>
+            <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">Stop hunting port conflicts manually.</h3>
+            <p style="font-size: 0.92rem; color: var(--text-secondary);">PortPeek automatically detects active local ports, identifies the running process, and lets you launch or kill servers in 1 click.</p>
+          </div>
+        </div>
+        <a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" rel="noopener noreferrer" class="btn-solution-cta">
+          Download PortPeek (~500 KB)
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- UNIFIED 5-COLUMN MEGA FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../index.html" class="nav-brand">
+            <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
+            <span>PortPeek</span>
+            <span class="nav-badge-ver">v1.0</span>
+          </a>
+          <p>Ultra-lightweight native Windows system-tray utility for local development servers. Built with Win32 &amp; C++17.</p>
+          <div style="font-size:0.8rem; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">
+            <span>⚡ Standalone Target: ~500 KB</span>
+            <span>🧠 Memory Footprint: &lt; 8 MB</span>
+            <span>🛡️ 100% Offline &amp; Private</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Navigation</h5>
+          <ul class="footer-col-links">
+            <li><a href="../index.html">Product Overview</a></li>
+            <li><a href="../simulator/index.html">Windows 11 Simulator</a></li>
+            <li><a href="../conflicts/index.html">Conflict Solver</a></li>
+            <li><a href="../ports/index.html">Ports Directory (40+)</a></li>
+            <li><a href="../knowledge/index.html">Knowledge Hub</a></li>
+            <li><a href="../inside/index.html">Inside Architecture</a></li>
+            <li><a href="../blog/index.html">Engineering Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Popular Ports</h5>
+          <ul class="footer-col-links">
+            <li><a href="../ports/3000/index.html">Port 3000 (Next.js)</a></li>
+            <li><a href="../ports/5173/index.html">Port 5173 (Vite)</a></li>
+            <li><a href="../ports/5432/index.html">Port 5432 (Postgres)</a></li>
+            <li><a href="../ports/6379/index.html">Port 6379 (Redis)</a></li>
+            <li><a href="../ports/8000/index.html">Port 8000 (FastAPI)</a></li>
+            <li><a href="../ports/8080/index.html">Port 8080 (Spring)</a></li>
+            <li><a href="../ports/11434/index.html">Port 11434 (Ollama)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Standards &amp; Docs</h5>
+          <ul class="footer-col-links">
+            <li><a href="../knowledge/index.html#quad-tuple">TCP Socket Anatomy</a></li>
+            <li><a href="../knowledge/index.html#loopback">127.0.0.1 vs 0.0.0.0</a></li>
+            <li><a href="../knowledge/index.html#time-wait">TIME_WAIT Diagnostics</a></li>
+            <li><a href="../knowledge/index.html#mobile">Mobile Wi-Fi Testing</a></li>
+            <li><a href="../inside/index.html#pipeline">Direct Win32 Kernel Query</a></li>
+            <li><a href="../inside/index.html#security">Least Privilege Security</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Open Source</h5>
+          <ul class="footer-col-links">
+            <li><a href="https://github.com/i-ayushsingh/PortPeek" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" rel="noopener noreferrer">Latest Release</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/issues" target="_blank" rel="noopener noreferrer">Report an Issue</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 PortPeek. Open-source under MIT License.</span>
+        <span>Crafted with precision for Windows developers.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../ports-data.js?v=2.0"></script>
+  <script src="../app.js?v=2.0"></script>
+  <script>
+    // Quick search preset buttons handler
+    document.querySelectorAll('.preset-search-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const query = btn.getAttribute('data-search');
+        const input = document.getElementById('portSearchInput');
+        if (input) {
+          input.value = query;
+          input.dispatchEvent(new Event('input'));
+          input.focus();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

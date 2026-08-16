@@ -1,0 +1,852 @@
+/**
+ * PortPeek Design System — Windows 11 Simulator Stylesheet
+ * Authentic Fluent Acrylic, Docked Taskbar, Context Flyout & Interactive Virtual Browser
+ */
+
+/* Simulator Page Layout */
+.sim-hero {
+  padding: 48px 0 24px;
+  text-align: center;
+}
+
+.sim-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 16px 0 12px;
+  color: var(--text-primary);
+}
+
+.sim-title span {
+  color: var(--accent-primary);
+}
+
+.sim-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 680px;
+  margin: 0 auto 24px;
+  line-height: 1.55;
+}
+
+.sim-quick-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.btn-sim-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-sim-action:hover {
+  background: var(--bg-interactive);
+  border-color: var(--border-hover);
+}
+
+.btn-sim-action.primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.btn-sim-action.primary:hover {
+  background: var(--accent-hover);
+}
+
+/* ==========================================================================
+   WINDOWS 11 DESKTOP STAGE
+   ========================================================================== */
+
+.sim-stage-wrapper {
+  margin-bottom: 48px;
+}
+
+.win11-desktop-stage {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: #0a0e17 radial-gradient(ellipse at 50% 40%, #152238 0%, #070a10 70%);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+[data-theme="light"] .win11-desktop-stage {
+  background: #dbeafe radial-gradient(ellipse at 50% 40%, #bfdbfe 0%, #93c5fd 80%);
+}
+
+.stage-helper-hint {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hint-badge {
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+}
+
+/* Desktop Shortcut Icons */
+.desktop-icons-area {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 5;
+}
+
+.desktop-icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 68px;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+.desktop-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.desktop-icon-btn svg {
+  width: 32px;
+  height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  display: block;
+}
+
+.desktop-icon-btn span {
+  font-size: 0.72rem;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================================================
+   VIRTUAL BROWSER WINDOW
+   ========================================================================== */
+
+.win11-browser-window {
+  position: absolute;
+  top: 40px;
+  left: 110px;
+  right: 360px;
+  bottom: 64px;
+  background: #181818;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 20;
+  transition: all 0.2s ease;
+}
+
+.win11-browser-window.minimized {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px) scale(0.95);
+}
+
+.browser-titlebar {
+  height: 38px;
+  background: #111111;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  border-bottom: 1px solid #242424;
+}
+
+.browser-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.browser-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: #181818;
+  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+  font-size: 0.76rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  border: 1px solid #242424;
+  border-bottom: none;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browser-tab.active {
+  background: #242424;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.browser-tab .tab-close {
+  opacity: 0.6;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.browser-tab .tab-close:hover {
+  opacity: 1;
+  color: #ff6b6b;
+}
+
+.browser-controls {
+  display: flex;
+  align-items: center;
+}
+
+.win-control-btn {
+  width: 32px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+.win-control-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.win-control-btn.close:hover {
+  background: #e81123;
+  color: #ffffff;
+}
+
+.browser-navbar {
+  height: 38px;
+  background: #181818;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-bottom: 1px solid #242424;
+}
+
+.nav-icon-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+.nav-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.browser-address-bar {
+  flex: 1;
+  height: 26px;
+  background: #111111;
+  border: 1px solid #2a2a2a;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+}
+
+.address-lock {
+  font-size: 0.7rem;
+}
+
+.address-text {
+  flex: 1;
+  color: #93c5fd;
+}
+
+.address-tag {
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
+}
+
+.browser-viewport {
+  flex: 1;
+  background: #0f172a;
+  overflow-y: auto;
+  padding: 20px;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   PORTPEEK WIN32 POPUP TRAY MENU
+   ========================================================================== */
+
+.win11-tray-menu {
+  position: absolute;
+  bottom: 54px;
+  right: 14px;
+  width: 320px;
+  max-height: calc(100% - 64px);
+  background: rgba(24, 24, 24, 0.96);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-flyout);
+  padding: 6px;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.96);
+  transition: all 0.14s ease;
+  overflow-y: auto;
+}
+
+.win11-tray-menu.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.tray-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 4px;
+}
+
+.active-count-tag {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.tray-menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tray-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 0.84rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.tray-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-port-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-port-badge {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--accent-primary);
+  min-width: 44px;
+  flex-shrink: 0;
+}
+
+.menu-port-details {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-port-mem {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.tray-menu-item.action-open-all {
+  color: var(--accent-primary);
+  font-weight: 600;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 4px;
+  padding-top: 8px;
+}
+
+.tray-menu-item.action-open-all:hover {
+  background: rgba(0, 120, 212, 0.15);
+}
+
+.tray-menu-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 4px 6px;
+}
+
+.flyout-submenu {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  right: 100%;
+  width: 240px;
+  background: rgba(24, 24, 24, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-flyout);
+  padding: 6px;
+  list-style: none;
+  margin-right: 4px;
+  z-index: 40;
+}
+
+.tray-menu-item.has-sub:hover .flyout-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.flyout-item {
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.flyout-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   WINDOWS 11 TASKBAR
+   ========================================================================== */
+
+.win11-taskbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: rgba(14, 14, 14, 0.94);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-default);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 25;
+}
+
+.btn-start-menu {
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+.btn-start-menu:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-start-menu svg {
+  width: 18px;
+  height: 18px;
+}
+
+.taskbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.taskbar-app-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.taskbar-app-icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.taskbar-app-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.taskbar-tray {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tray-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+}
+
+/* PortPeek Tray Button */
+.tray-portpeek-btn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  background: rgba(0, 120, 212, 0.15);
+  border: 1px solid rgba(0, 120, 212, 0.4);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tray-portpeek-btn:hover {
+  background: rgba(0, 120, 212, 0.3);
+  border-color: var(--accent-primary);
+  transform: scale(1.05);
+}
+
+.tray-portpeek-btn img {
+  width: 22px !important;
+  height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
+  object-fit: contain;
+  display: block;
+}
+
+.tray-pulse-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0 4px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pulse-dot {
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.tray-clock {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  padding: 0 6px;
+}
+
+/* ==========================================================================
+   SIMULATOR TOASTS & PLAYGROUND
+   ========================================================================== */
+
+.win11-toast-container {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.win11-toast {
+  background: rgba(24, 24, 24, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+  animation: slideToast 0.2s ease;
+}
+
+@keyframes slideToast {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Playground & Control Dock */
+.playground-section {
+  padding: 32px 0 64px;
+}
+
+.playground-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+}
+
+.play-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.play-panel-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.play-panel-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.preset-spawner-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn-preset-spawn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-interactive);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.btn-preset-spawn:hover {
+  background: var(--bg-interactive-hover);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+.btn-preset-spawn .icon {
+  font-size: 1.1rem;
+}
+
+.btn-preset-spawn .details {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-preset-spawn strong {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.btn-preset-spawn .port-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent-primary);
+}
+
+.custom-spawn-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.form-group input,
+.form-group select {
+  background: var(--bg-interactive);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xs);
+  padding: 7px 10px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--accent-primary);
+}
+
+.btn-custom-spawn {
+  background: var(--accent-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 9px 16px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-custom-spawn:hover {
+  background: var(--accent-hover);
+}
+
+.event-log-box {
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: var(--radius-sm);
+  height: 280px;
+  overflow-y: auto;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: #a1a1aa;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-entry {
+  line-height: 1.5;
+}
+
+.log-entry.kernel { color: #38bdf8; }
+.log-entry.tray { color: #4ade80; }
+.log-entry.kill { color: #f87171; }
+.log-entry.warn { color: #fbbf24; }
+
+@media (max-width: 900px) {
+  .playground-grid { grid-template-columns: 1fr; }
+  .preset-spawner-grid { grid-template-columns: repeat(2, 1fr); }
+  .win11-browser-window { left: 10px; right: 10px; }
+}

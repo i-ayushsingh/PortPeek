@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://i-ayushsingh.github.io/PortPeek/sitemap.xml

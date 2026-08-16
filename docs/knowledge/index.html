@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Ports, Sockets & Loopback Architecture — PortPeek Knowledge Hub</title>
+  
+  <meta name="description" content="An authoritative guide to TCP/UDP ports, loopback architecture (127.0.0.1 vs 0.0.0.0 vs [::1]), Windows Winsock internals, port exhaustion, and TIME_WAIT lifecycle." />
+  <meta name="keywords" content="TCP ports, UDP ports, loopback 127.0.0.1, 0.0.0.0 INADDR_ANY, ipv6 loopback ::1, Winsock afd.sys, TIME_WAIT 2MSL, port exhaustion Windows, RFC 793, RFC 6335, IANA port registry" />
+  
+  <!-- OpenGraph / Social Cards -->
+  <meta property="og:title" content="Network Ports, Sockets & Loopback Architecture — PortPeek Knowledge Hub" />
+  <meta property="og:description" content="In-depth educational reference on networking fundamentals, Windows TCP/IP stack, socket anatomy, and localhost debugging." />
+  <meta property="og:image" content="../appicon.png" />
+  <meta property="og:type" content="article" />
+  
+  <link rel="icon" type="image/png" href="../appicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../css/theme.css" />
+  <script src="../js/theme.js"></script>
+
+  <style>
+    /* Custom Knowledge Hub Layout & Article Styling */
+    :root {
+      --knowledge-sidebar-w: 280px;
+    }
+
+    body {
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      line-height: 1.68;
+      transition: background-color var(--duration-normal) ease, color var(--duration-normal) ease;
+    }
+
+    .knowledge-layout {
+      display: grid;
+      grid-template-columns: var(--knowledge-sidebar-w) minmax(0, 1fr);
+      gap: 48px;
+      max-width: var(--container-wide-max-width);
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+    }
+
+    @media (max-width: 1024px) {
+      .knowledge-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .knowledge-sidebar {
+        display: none;
+      }
+    }
+
+    /* Sticky Sidebar Navigation */
+    .knowledge-sidebar {
+      position: sticky;
+      top: 84px;
+      height: calc(100vh - 110px);
+      overflow-y: auto;
+      padding-right: 16px;
+      scrollbar-width: thin;
+    }
+
+    .sidebar-heading {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all var(--duration-fast) ease;
+      border-left: 2px solid transparent;
+    }
+
+    .toc-link:hover {
+      color: var(--text-primary);
+      background: var(--control-hover);
+      border-left-color: var(--accent-primary);
+    }
+
+    .toc-link.active {
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border-left-color: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .toc-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      background: var(--bg-sunken);
+      color: var(--text-tertiary);
+      margin-left: auto;
+    }
+
+    /* Main Article Content */
+    .article-main {
+      min-width: 0;
+    }
+
+    .hub-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .hub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-subtle);
+      border: 1px solid var(--accent-border);
+      color: var(--accent-primary);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .hub-title {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .hub-lead {
+      font-size: 1.18rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 820px;
+    }
+
+    .hub-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      flex-wrap: wrap;
+    }
+
+    .hub-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Content Typography & Sections */
+    .content-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 84px;
+    }
+
+    .section-anchor {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .content-h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .content-h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 32px 0 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .content-p {
+      color: var(--text-secondary);
+      font-size: 1.02rem;
+      margin-bottom: 18px;
+      line-height: 1.72;
+    }
+
+    .content-p strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .content-p code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--accent-primary);
+    }
+
+    /* Interactive & Illustrated Diagram Cards */
+    .diagram-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin: 28px 0;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .diagram-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .diagram-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .diagram-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-border);
+      font-weight: 600;
+    }
+
+    .diagram-svg-container {
+      width: 100%;
+      overflow-x: auto;
+      padding: 12px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .diagram-svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .diagram-caption {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* RFC Reference Grid & Cards */
+    .rfc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .rfc-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      transition: transform var(--duration-fast) ease, border-color var(--duration-fast) ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .rfc-card:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-2px);
+    }
+
+    .rfc-num {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 6px;
+    }
+
+    .rfc-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .rfc-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .rfc-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+
+    .rfc-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Comparison Tables */
+    .data-table-wrapper {
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .data-table th {
+      background: var(--bg-sunken);
+      padding: 14px 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      padding: 2px 6px;
+      background: var(--bg-app);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+      color: var(--accent-primary);
+    }
+
+    /* Code Snippet Blocks */
+    .code-window {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: var(--radius-lg);
+      margin: 20px 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .code-window-header {
+      background: var(--code-header-bg);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--code-border);
+    }
+
+    .code-window-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .code-window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .code-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border-hover);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-tertiary);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--duration-fast) ease;
+      font-family: var(--font-family);
+    }
+
+    .btn-copy:hover {
+      background: var(--control-hover);
+      color: var(--text-primary);
+      border-color: var(--border-default);
+    }
+
+    .code-content {
+      padding: 16px 20px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--code-text);
+      margin: 0;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin: 24px 0;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      border: 1px solid transparent;
+    }
+
+    .callout-info {
+      background: var(--info-subtle);
+      border-color: var(--info-border);
+    }
+
+    .callout-warning {
+      background: var(--warning-subtle);
+      border-color: var(--warning-border);
+    }
+
+    .callout-success {
+      background: var(--success-subtle);
+      border-color: var(--success-border);
+    }
+
+    .callout-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .callout-body {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .callout-body strong {
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ASCII Block typography */
+    .ascii-box {
+      background: var(--bg-sunken);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--text-secondary);
+      overflow-x: auto;
+      white-space: pre;
+      margin: 16px 0;
+    }
+
+    .theme-toggle-btn {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--control-hover);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all var(--duration-fast) ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--control-active);
+      border-color: var(--border-default);
+    }
+
+    /* State Machine Interactive Flow */
+    .state-machine-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .state-pill {
+      background: var(--bg-sunken);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      transition: all var(--duration-fast) ease;
+    }
+
+    .state-pill.active {
+      border-color: var(--accent-primary);
+      background: var(--accent-subtle);
+    }
+
+    .state-pill-name {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 4px;
+    }
+
+    .state-pill-desc {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP GLASS NAVBAR -->
+    <!-- UNIFIED APPLE / ARC TOPBAR -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="nav-brand">
+        <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
+        <span>PortPeek</span>
+        <span class="nav-badge-ver">v1.0</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="../index.html" class="nav-link">Product</a>
+        <a href="../simulator/index.html" class="nav-link">Simulator</a>
+        <a href="../ports/index.html" class="nav-link">Ports</a>
+        <a href="../conflicts/index.html" class="nav-link">Conflicts</a>
+        <a href="../knowledge/index.html" class="nav-link active">Knowledge</a>
+        <a href="../inside/index.html" class="nav-link">Inside</a>
+        <a href="../blog/index.html" class="nav-link">Blog</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/i-ayushsingh/PortPeek" target="_blank" rel="noopener noreferrer" class="btn-nav-github" title="View on GitHub">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" rel="noopener noreferrer" class="btn-nav-download">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.551H10.949M0 12.6h9.75V22.05L0 20.701M10.949 12.6H24V24l-13.051-1.8z"/></svg>
+          <span>Download</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- KNOWLEDGE HUB MAIN CONTAINER -->
+  <div class="knowledge-layout">
+
+    <!-- STICKY TABLE OF CONTENTS SIDEBAR -->
+    <aside class="knowledge-sidebar">
+      <div class="sidebar-heading">Knowledge Directory</div>
+      <nav class="toc-nav">
+        <a href="#sockets-anatomy" class="toc-link">
+          <span>1. Sockets & Quad-Tuple</span>
+          <span class="toc-badge">TCP</span>
+        </a>
+        <a href="#rfc-ranges" class="toc-link">
+          <span>2. Port Ranges & RFCs</span>
+          <span class="toc-badge">IANA</span>
+        </a>
+        <a href="#loopback-comparison" class="toc-link">
+          <span>3. 127.0.0.1 vs 0.0.0.0 vs [::1]</span>
+          <span class="toc-badge">Net</span>
+        </a>
+        <a href="#windows-winsock" class="toc-link">
+          <span>4. Windows Winsock & Loopback</span>
+          <span class="toc-badge">Kernel</span>
+        </a>
+        <a href="#tcp-state-machine" class="toc-link">
+          <span>5. TCP State Machine & 2MSL</span>
+          <span class="toc-badge">State</span>
+        </a>
+        <a href="#port-exhaustion" class="toc-link">
+          <span>6. Port Exhaustion & TIME_WAIT</span>
+          <span class="toc-badge">Diag</span>
+        </a>
+        <a href="#lan-mobile-guide" class="toc-link">
+          <span>7. Mobile LAN Testing Guide</span>
+          <span class="toc-badge">Wi-Fi</span>
+        </a>
+        <a href="#ipv6-node-gotchas" class="toc-link">
+          <span>8. IPv6 & Node.js 18+ Gotchas</span>
+          <span class="toc-badge">Fix</span>
+        </a>
+      </nav>
+
+      <div style="margin-top: 36px; padding: 16px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">⚡ Native Windows Inspector</div>
+        <p style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 12px;">PortPeek provides real-time visibility into all active local listeners in sub-2ms.</p>
+        <a href="../inside/index.html" style="font-size: 0.78rem; font-weight: 600; color: var(--accent-primary); display: inline-flex; align-items: center; gap: 4px;">
+          Read Architecture Deep Dive →
+        </a>
+      </div>
+    </aside>
+
+    <!-- ARTICLE MAIN CONTENT -->
+    <main class="article-main">
+
+      <!-- HEADER -->
+      <header class="hub-header">
+        <div class="hub-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>PortPeek Educational Knowledge Hub</span>
+        </div>
+        <h1 class="hub-title">Network Ports, Sockets & Loopback Architecture on Windows</h1>
+        <p class="hub-lead">
+          An authoritative, engineering-first deep dive into transport layer sockets, the Windows kernel TCP/IP stack (`tcpip.sys` & `afd.sys`), interface binding semantics, `TIME_WAIT` mechanics, and port exhaustion diagnostics.
+        </p>
+        <div class="hub-meta">
+          <span class="hub-meta-item">📚 Authoritative IETF & Microsoft Learn Citations</span>
+          <span class="hub-meta-item">•</span>
+          <span class="hub-meta-item">⏱️ 12 min reference read</span>
+          <span class="hub-meta-item">•</span>
+          <span class="hub-meta-item">💻 Verified for Windows 11 & Windows 10</span>
+        </div>
+      </header>
+
+      <!-- SECTION 1: SOCKETS & QUAD-TUPLE -->
+      <section class="content-section" id="sockets-anatomy">
+        <div class="section-anchor">
+          <span class="section-num">01</span>
+          <h2 class="content-h2">Anatomy of a TCP Socket Connection</h2>
+        </div>
+
+        <p class="content-p">
+          In computer networking, a <strong>network port</strong> is not a physical hardware interface; it is a 16-bit unsigned integer (ranging from <code>0</code> to <code>65535</code>) used by the operating system's transport layer protocol (TCP or UDP) to demultiplex incoming and outgoing packets to specific process threads.
+        </p>
+
+        <p class="content-p">
+          A TCP connection is uniquely identified across the entire operating system by a <strong>5-tuple</strong> (often referred to in socket programming as the <strong>quad-tuple + protocol</strong>):
+        </p>
+
+        <div class="ascii-box">{ Protocol: TCP, Source IP, Source Port, Destination IP, Destination Port }</div>
+
+        <!-- DIAGRAM 1: ANATOMY OF A SOCKET CONNECTION -->
+        <div class="diagram-card">
+          <div class="diagram-header">
+            <span class="diagram-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              Figure 1: Full-Duplex TCP Socket Quad-Tuple Demultiplexing
+            </span>
+            <span class="diagram-tag">RFC 793 / Winsock 2</span>
+          </div>
+
+          <div class="diagram-svg-container">
+            <svg class="diagram-svg" viewBox="0 0 740 260" width="740" height="260" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="clientGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="var(--accent-subtle)" />
+                  <stop offset="100%" stop-color="var(--bg-sunken)" />
+                </linearGradient>
+                <linearGradient id="serverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="var(--success-subtle)" />
+                  <stop offset="100%" stop-color="var(--bg-sunken)" />
+                </linearGradient>
+                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1 L 8 5 L 0 9 z" fill="var(--accent-primary)" />
+                </marker>
+                <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1 L 8 5 L 0 9 z" fill="var(--success-hover)" />
+                </marker>
+              </defs>
+
+              <!-- Client Box -->
+              <rect x="20" y="30" width="220" height="200" rx="10" fill="url(#clientGrad)" stroke="var(--accent-border)" stroke-width="1.5"/>
+              <text x="35" y="60" fill="var(--accent-primary)" font-size="14" font-weight="700" font-family="var(--font-family)">CLIENT PROCESS</text>
+              <text x="35" y="80" fill="var(--text-secondary)" font-size="12" font-family="var(--font-mono)">chrome.exe (PID 8412)</text>
+              
+              <rect x="35" y="98" width="190" height="42" rx="6" fill="var(--bg-app)" stroke="var(--border-subtle)"/>
+              <text x="45" y="116" fill="var(--text-tertiary)" font-size="10" font-family="var(--font-family)">Source Socket Descriptor (fd: 32)</text>
+              <text x="45" y="132" fill="var(--accent-primary)" font-size="12" font-weight="600" font-family="var(--font-mono)">127.0.0.1 : 52184</text>
+              
+              <rect x="35" y="148" width="190" height="34" rx="4" fill="var(--bg-surface)" stroke="var(--border-subtle)"/>
+              <text x="45" y="170" fill="var(--text-secondary)" font-size="11" font-family="var(--font-mono)">Tx/Rx Ring Buffers</text>
+              <text x="35" y="210" fill="var(--text-tertiary)" font-size="11" font-family="var(--font-family)">Ephemeral Dynamic Port</text>
+
+              <!-- Connection Pipeline -->
+              <path d="M 240 119 L 470 119" stroke="var(--accent-primary)" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+              <path d="M 470 145 L 240 145" stroke="var(--success-hover)" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrowGreen)"/>
+              
+              <!-- Middle Pipeline Badge -->
+              <rect x="290" y="70" width="160" height="36" rx="18" fill="var(--bg-elevated)" stroke="var(--border-default)"/>
+              <text x="370" y="92" fill="var(--text-primary)" font-size="11" font-weight="600" text-anchor="middle" font-family="var(--font-family)">Full-Duplex TCP Stream</text>
+              
+              <rect x="280" y="166" width="180" height="44" rx="6" fill="var(--bg-app)" stroke="var(--border-subtle)"/>
+              <text x="370" y="184" fill="var(--text-secondary)" font-size="10" text-anchor="middle" font-family="var(--font-mono)">Seq: 38102914 • Ack: 928172</text>
+              <text x="370" y="200" fill="var(--text-tertiary)" font-size="10" text-anchor="middle" font-family="var(--font-family)">Zero Physical Network Delay</text>
+
+              <!-- Server Box -->
+              <rect x="500" y="30" width="220" height="200" rx="10" fill="url(#serverGrad)" stroke="var(--success-border)" stroke-width="1.5"/>
+              <text x="515" y="60" fill="var(--success-text)" font-size="14" font-weight="700" font-family="var(--font-family)">SERVER PROCESS</text>
+              <text x="515" y="80" fill="var(--text-secondary)" font-size="12" font-family="var(--font-mono)">node.exe (PID 14200)</text>
+              
+              <rect x="515" y="98" width="190" height="42" rx="6" fill="var(--bg-app)" stroke="var(--border-subtle)"/>
+              <text x="525" y="116" fill="var(--text-tertiary)" font-size="10" font-family="var(--font-family)">Bound Listening Socket (fd: 14)</text>
+              <text x="525" y="132" fill="var(--success-text)" font-size="12" font-weight="600" font-family="var(--font-mono)">0.0.0.0 : 3000</text>
+              
+              <rect x="515" y="148" width="190" height="34" rx="4" fill="var(--bg-surface)" stroke="var(--border-subtle)"/>
+              <text x="525" y="170" fill="var(--text-secondary)" font-size="11" font-family="var(--font-mono)">Accept Queue (Backlog)</text>
+              <text x="515" y="210" fill="var(--text-tertiary)" font-size="11" font-family="var(--font-family)">Registered Service Port</text>
+            </svg>
+          </div>
+          <div class="diagram-caption">
+            Figure 1: Even when connecting locally on <code>localhost</code>, the operating system assigns a high-range ephemeral client port (e.g. <code>52184</code>) to establish an isolated two-way virtual circuit with the server's listening port (<code>3000</code>).
+          </div>
+        </div>
+
+        <p class="content-p">
+          When your web browser navigates to <code>http://localhost:3000</code>, the browser requests the Windows TCP/IP stack to allocate a random free outbound <em>ephemeral port</em> (in this example, <code>52184</code>). The kernel creates a socket file descriptor representing this unique session. The server application (listening on port <code>3000</code>) accepts the incoming connection and receives a separate socket descriptor to read and write bytes without blocking other incoming requests.
+        </p>
+      </section>
+
+      <!-- SECTION 2: PORT RANGES & RFC STANDARDS -->
+      <section class="content-section" id="rfc-ranges">
+        <div class="section-anchor">
+          <span class="section-num">02</span>
+          <h2 class="content-h2">IETF RFC Standards & Port Ranges</h2>
+        </div>
+
+        <p class="content-p">
+          The <strong>Internet Assigned Numbers Authority (IANA)</strong> and the <strong>Internet Engineering Task Force (IETF)</strong> establish strict guidelines for port allocations under <strong>RFC 6335</strong> and <strong>RFC 793</strong>. The 16-bit address space is partitioned into three distinct segments:
+        </p>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Port Range</th>
+                <th>Classification</th>
+                <th>Privilege / Allocation Rule</th>
+                <th>Typical Examples</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>0 – 1023</code></td>
+                <td><strong>System / Well-Known Ports</strong></td>
+                <td>Historically required root/administrator privileges to bind. Assigned by IANA for standard core internet protocols.</td>
+                <td><code>80</code> (HTTP), <code>443</code> (HTTPS), <code>22</code> (SSH), <code>53</code> (DNS), <code>25</code> (SMTP)</td>
+              </tr>
+              <tr>
+                <td><code>1024 – 49151</code></td>
+                <td><strong>User / Registered Ports</strong></td>
+                <td>Can be bound by unprivileged user applications. Registered with IANA to avoid conflicts between third-party software products.</td>
+                <td><code>3000</code> (Dev), <code>5173</code> (Vite), <code>8080</code> (Proxy), <code>5432</code> (PostgreSQL), <code>6379</code> (Redis)</td>
+              </tr>
+              <tr>
+                <td><code>49152 – 65535</code></td>
+                <td><strong>Dynamic / Private / Ephemeral</strong></td>
+                <td>Allocated automatically on demand by the OS kernel for temporary outbound client sockets. Cannot be permanently registered.</td>
+                <td>Outbound browser connections, database client connections, ephemeral RPC tunnels.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rfc-grid">
+          <div class="rfc-card">
+            <div>
+              <div class="rfc-num">RFC 793 / RFC 9293</div>
+              <div class="rfc-title">Transmission Control Protocol (TCP)</div>
+              <div class="rfc-desc">Defines reliable byte-stream transmission, the 3-way handshake, sliding-window flow control, and formal state machine transitions.</div>
+            </div>
+            <a href="https://www.rfc-editor.org/rfc/rfc9293.html" target="_blank" class="rfc-link">Read IETF Specification ↗</a>
+          </div>
+
+          <div class="rfc-card">
+            <div>
+              <div class="rfc-num">RFC 768</div>
+              <div class="rfc-title">User Datagram Protocol (UDP)</div>
+              <div class="rfc-desc">Lightweight, connectionless datagram transport with zero connection setup overhead. Used for DNS, WebRTC, VoIP, and QUIC (HTTP/3).</div>
+            </div>
+            <a href="https://www.rfc-editor.org/rfc/rfc768.html" target="_blank" class="rfc-link">Read IETF Specification ↗</a>
+          </div>
+
+          <div class="rfc-card">
+            <div>
+              <div class="rfc-num">RFC 1122</div>
+              <div class="rfc-title">Requirements for Internet Hosts</div>
+              <div class="rfc-desc">Section 3.2.1.3 explicitly codifies loopback behavior: packets sent to 127.0.0.0/8 must never appear on any physical network link.</div>
+            </div>
+            <a href="https://www.rfc-editor.org/rfc/rfc1122.html" target="_blank" class="rfc-link">Read IETF Specification ↗</a>
+          </div>
+
+          <div class="rfc-card">
+            <div>
+              <div class="rfc-num">RFC 6335</div>
+              <div class="rfc-title">IANA Port Number Management Procedures</div>
+              <div class="rfc-desc">Formalizes the allocation criteria for System (0-1023), User (1024-49151), and Dynamic/Private (49152-65535) port numbers.</div>
+            </div>
+            <a href="https://www.rfc-editor.org/rfc/rfc6335.html" target="_blank" class="rfc-link">Read IETF Specification ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: LOOPBACK COMPARISON -->
+      <section class="content-section" id="loopback-comparison">
+        <div class="section-anchor">
+          <span class="section-num">03</span>
+          <h2 class="content-h2">127.0.0.1 vs 0.0.0.0 vs [::1] Binding Semantics</h2>
+        </div>
+
+        <p class="content-p">
+          One of the most frequent sources of developer confusion is the difference between binding a server to <code>127.0.0.1</code> versus <code>0.0.0.0</code> versus IPv6 <code>[::1]</code>:
+        </p>
+
+        <!-- DIAGRAM 2: 127.0.0.1 VS 0.0.0.0 BINDING ARCHITECTURE -->
+        <div class="diagram-card">
+          <div class="diagram-header">
+            <span class="diagram-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+              Figure 2: Host Interface Binding Scope Comparison
+            </span>
+            <span class="diagram-tag">RFC 1122 vs INADDR_ANY</span>
+          </div>
+
+          <div class="diagram-svg-container">
+            <svg class="diagram-svg" viewBox="0 0 740 280" width="740" height="280" xmlns="http://www.w3.org/2000/svg">
+              <!-- Left Side: 127.0.0.1 -->
+              <g transform="translate(10, 20)">
+                <rect x="0" y="0" width="345" height="240" rx="8" fill="var(--bg-sunken)" stroke="var(--border-default)"/>
+                <text x="20" y="32" fill="var(--text-primary)" font-size="14" font-weight="700" font-family="var(--font-family)">BINDING: 127.0.0.1 (INADDR_LOOPBACK)</text>
+                <text x="20" y="52" fill="var(--text-tertiary)" font-size="11" font-family="var(--font-family)">Restricted to local virtual adapter only</text>
+                
+                <!-- Internal Loopback Path -->
+                <rect x="20" y="70" width="305" height="50" rx="6" fill="var(--accent-subtle)" stroke="var(--accent-border)"/>
+                <text x="35" y="92" fill="var(--accent-primary)" font-size="12" font-weight="700" font-family="var(--font-mono)">Localhost (127.0.0.1)</text>
+                <text x="35" y="108" fill="var(--text-secondary)" font-size="10" font-family="var(--font-family)">✅ ALLOWED (Internal inter-process memory copy)</text>
+
+                <!-- Blocked External Interfaces -->
+                <rect x="20" y="130" width="305" height="42" rx="6" fill="var(--danger-subtle)" stroke="var(--danger-border)"/>
+                <text x="35" y="148" fill="var(--danger-text)" font-size="11" font-weight="600" font-family="var(--font-family)">Physical Wi-Fi / LAN (192.168.1.45)</text>
+                <text x="35" y="162" fill="var(--text-tertiary)" font-size="10" font-family="var(--font-family)">❌ REJECTED (Kernel silently drops inbound packets)</text>
+
+                <rect x="20" y="180" width="305" height="42" rx="6" fill="var(--danger-subtle)" stroke="var(--danger-border)"/>
+                <text x="35" y="198" fill="var(--danger-text)" font-size="11" font-weight="600" font-family="var(--font-family)">WSL / Hyper-V Virtual Switch (172.x.x.x)</text>
+                <text x="35" y="212" fill="var(--text-tertiary)" font-size="10" font-family="var(--font-family)">❌ REJECTED (Unless port proxy configured)</text>
+              </g>
+
+              <!-- Right Side: 0.0.0.0 -->
+              <g transform="translate(385, 20)">
+                <rect x="0" y="0" width="345" height="240" rx="8" fill="var(--bg-sunken)" stroke="var(--success-border)"/>
+                <text x="20" y="32" fill="var(--success-text)" font-size="14" font-weight="700" font-family="var(--font-family)">BINDING: 0.0.0.0 (INADDR_ANY)</text>
+                <text x="20" y="52" fill="var(--text-tertiary)" font-size="11" font-family="var(--font-family)">Binds to ALL local and external interfaces</text>
+                
+                <!-- Internal Loopback Path -->
+                <rect x="20" y="70" width="305" height="50" rx="6" fill="var(--success-subtle)" stroke="var(--success-border)"/>
+                <text x="35" y="92" fill="var(--success-text)" font-size="12" font-weight="700" font-family="var(--font-mono)">Localhost (127.0.0.1)</text>
+                <text x="35" y="108" fill="var(--text-secondary)" font-size="10" font-family="var(--font-family)">✅ ALLOWED (Developer browser on PC)</text>
+
+                <!-- Allowed External Interfaces -->
+                <rect x="20" y="130" width="305" height="42" rx="6" fill="var(--success-subtle)" stroke="var(--success-border)"/>
+                <text x="35" y="148" fill="var(--success-text)" font-size="11" font-weight="600" font-family="var(--font-family)">Physical Wi-Fi / LAN (192.168.1.45)</text>
+                <text x="35" y="162" fill="var(--text-secondary)" font-size="10" font-family="var(--font-family)">✅ ALLOWED (Mobile phone & tablets on local Wi-Fi)</text>
+
+                <rect x="20" y="180" width="305" height="42" rx="6" fill="var(--success-subtle)" stroke="var(--success-border)"/>
+                <text x="35" y="198" fill="var(--success-text)" font-size="11" font-weight="600" font-family="var(--font-family)">WSL / Docker Bridge Containers</text>
+                <text x="35" y="212" fill="var(--text-secondary)" font-size="10" font-family="var(--font-family)">✅ ALLOWED (Inter-container & cross-subnet)</text>
+              </g>
+            </svg>
+          </div>
+          <div class="diagram-caption">
+            Figure 2: Binding to <code>127.0.0.1</code> protects your machine from external LAN intruders, while <code>0.0.0.0</code> is required when testing web apps from a physical phone on the same Wi-Fi router.
+          </div>
+        </div>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Address</th>
+                <th>Socket Constant</th>
+                <th>Scope & Accessibility</th>
+                <th>Security Implication</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>127.0.0.1</code></td>
+                <td><code>INADDR_LOOPBACK</code></td>
+                <td>Local machine only. Binds exclusively to the loopback pseudo-device.</td>
+                <td><strong>Secure by Default</strong>: External hosts on Wi-Fi/Ethernet cannot access the dev server.</td>
+              </tr>
+              <tr>
+                <td><code>0.0.0.0</code></td>
+                <td><code>INADDR_ANY</code></td>
+                <td>All IPv4 interfaces (Loopback, Wi-Fi, Ethernet, WSL, Docker bridge).</td>
+                <td><strong>Exposed to LAN</strong>: Anyone on your local Wi-Fi subnet can reach this port if firewall allows.</td>
+              </tr>
+              <tr>
+                <td><code>::1</code></td>
+                <td><code>in6addr_loopback</code></td>
+                <td>IPv6 loopback pseudo-device (128-bit single address).</td>
+                <td><strong>Secure by Default</strong>: Same local isolation as 127.0.0.1 for IPv6-only stacks.</td>
+              </tr>
+              <tr>
+                <td><code>::</code></td>
+                <td><code>in6addr_any</code></td>
+                <td>All IPv6 (and IPv4 if dual-stack socket option <code>IPV6_V6ONLY=0</code> is active).</td>
+                <td><strong>Exposed to LAN</strong>: Binds wildcard across IPv6 and IPv4 interfaces.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 4: WINDOWS WINSOCK & KERNEL ARCHITECTURE -->
+      <section class="content-section" id="windows-winsock">
+        <div class="section-anchor">
+          <span class="section-num">04</span>
+          <h2 class="content-h2">The Life of a Localhost Request on Windows</h2>
+        </div>
+
+        <p class="content-p">
+          When a Windows application issues a network request to <code>http://localhost:3000</code>, the packet <strong>never touches the Network Interface Card (NIC)</strong>, never undergoes MAC layer framing, and is never serialized into physical ethernet signals. Instead, Windows processes it through a dedicated kernel-level fast path:
+        </p>
+
+        <!-- DIAGRAM 3: LIFE OF A LOCALHOST REQUEST ON WINDOWS -->
+        <div class="diagram-card">
+          <div class="diagram-header">
+            <span class="diagram-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              Figure 3: Windows 11 Winsock 2 & Kernel Loopback Fast Path
+            </span>
+            <span class="diagram-tag">Kernel Driver Architecture</span>
+          </div>
+
+          <div class="diagram-svg-container">
+            <svg class="diagram-svg" viewBox="0 0 740 320" width="740" height="320" xmlns="http://www.w3.org/2000/svg">
+              <!-- Layer 1: User Mode -->
+              <rect x="20" y="10" width="700" height="80" rx="8" fill="var(--bg-sunken)" stroke="var(--border-subtle)"/>
+              <text x="35" y="32" fill="var(--text-tertiary)" font-size="11" font-weight="700" font-family="var(--font-mono)">USER-MODE (Ring 3)</text>
+              
+              <rect x="40" y="42" width="200" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-default)"/>
+              <text x="140" y="64" fill="var(--text-primary)" font-size="12" font-weight="600" text-anchor="middle" font-family="var(--font-family)">User App (fetch / curl)</text>
+
+              <path d="M 240 60 L 280 60" stroke="var(--accent-primary)" stroke-width="2" marker-end="url(#arrow)"/>
+
+              <rect x="290" y="42" width="210" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-default)"/>
+              <text x="395" y="64" fill="var(--accent-primary)" font-size="12" font-weight="600" text-anchor="middle" font-family="var(--font-mono)">ws2_32.dll (Winsock 2)</text>
+
+              <path d="M 500 60 L 540 60" stroke="var(--accent-primary)" stroke-width="2" marker-end="url(#arrow)"/>
+
+              <rect x="550" y="42" width="150" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-default)"/>
+              <text x="625" y="64" fill="var(--text-secondary)" font-size="11" font-weight="600" text-anchor="middle" font-family="var(--font-family)">hosts resolver</text>
+
+              <!-- Transition Boundary -->
+              <line x1="20" y1="105" x2="720" y2="105" stroke="var(--accent-border)" stroke-width="1.5" stroke-dasharray="4,4"/>
+              <text x="370" y="102" fill="var(--accent-primary)" font-size="10" font-weight="600" text-anchor="middle" font-family="var(--font-mono)">System Call Boundary (NtDeviceIoControlFile)</text>
+
+              <!-- Layer 2: Kernel Mode -->
+              <rect x="20" y="120" width="700" height="180" rx="8" fill="var(--bg-surface)" stroke="var(--border-default)"/>
+              <text x="35" y="142" fill="var(--accent-primary)" font-size="11" font-weight="700" font-family="var(--font-mono)">KERNEL-MODE (Ring 0) — tcpip.sys & afd.sys</text>
+
+              <g transform="translate(40, 155)">
+                <rect x="0" y="0" width="200" height="55" rx="6" fill="var(--bg-app)" stroke="var(--border-subtle)"/>
+                <text x="15" y="24" fill="var(--text-primary)" font-size="12" font-weight="700" font-family="var(--font-mono)">afd.sys</text>
+                <text x="15" y="42" fill="var(--text-tertiary)" font-size="10" font-family="var(--font-family)">Ancillary Function Driver for Sockets</text>
+              </g>
+
+              <path d="M 240 182 L 280 182" stroke="var(--accent-primary)" stroke-width="2" marker-end="url(#arrow)"/>
+
+              <g transform="translate(290, 155)">
+                <rect x="0" y="0" width="200" height="55" rx="6" fill="var(--bg-app)" stroke="var(--border-subtle)"/>
+                <text x="15" y="24" fill="var(--text-primary)" font-size="12" font-weight="700" font-family="var(--font-mono)">tcpip.sys</text>
+                <text x="15" y="42" fill="var(--text-tertiary)" font-size="10" font-family="var(--font-family)">Next Generation TCP/IP Stack</text>
+              </g>
+
+              <path d="M 490 182 L 530 182" stroke="var(--success-hover)" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+              <g transform="translate(540, 155)">
+                <rect x="0" y="0" width="160" height="55" rx="6" fill="var(--success-subtle)" stroke="var(--success-border)"/>
+                <text x="15" y="24" fill="var(--success-text)" font-size="12" font-weight="700" font-family="var(--font-mono)">\Device\TcpLoopback</text>
+                <text x="15" y="42" fill="var(--text-secondary)" font-size="10" font-family="var(--font-family)">Fast Memory Datapath</text>
+              </g>
+
+              <!-- Final delivery to target process -->
+              <rect x="40" y="225" width="660" height="60" rx="6" fill="var(--bg-sunken)" stroke="var(--border-subtle)"/>
+              <text x="55" y="248" fill="var(--text-primary)" font-size="12" font-weight="600" font-family="var(--font-family)">Direct Memory Buffer Transfer to Target Process (e.g. node.exe / next-server:3000)</text>
+              <text x="55" y="268" fill="var(--success-text)" font-size="11" font-family="var(--font-mono)">⚡ Latency &lt; 0.04 ms • Throughput &gt; 25 GB/s • 0% NIC Hardware Utilization</text>
+            </svg>
+          </div>
+          <div class="diagram-caption">
+            Figure 3: Winsock loopback traffic is handled directly via <code>afd.sys</code> and <code>\Device\TcpLoopback</code> in kernel space with zero packet framing overhead.
+          </div>
+        </div>
+
+        <p class="content-p">
+          Because the loopback connection is executed entirely through RAM copy operations between kernel buffers (managed by the Ancillary Function Driver <code>afd.sys</code>), throughput is governed only by CPU memory bandwidth rather than physical 1 Gbps or 2.5 Gbps network interface cards.
+        </p>
+      </section>
+
+      <!-- SECTION 5: TCP STATE MACHINE & 2MSL -->
+      <section class="content-section" id="tcp-state-machine">
+        <div class="section-anchor">
+          <span class="section-num">05</span>
+          <h2 class="content-h2">TCP State Machine & The TIME_WAIT State</h2>
+        </div>
+
+        <p class="content-p">
+          Every TCP socket connection progresses through a standardized state machine codified in <strong>RFC 793</strong> and <strong>RFC 9293</strong>:
+        </p>
+
+        <div class="state-machine-grid">
+          <div class="state-pill">
+            <div class="state-pill-name">1. LISTEN</div>
+            <div class="state-pill-desc">Server is waiting for incoming connection requests on a bound port.</div>
+          </div>
+          <div class="state-pill">
+            <div class="state-pill-name">2. SYN_SENT</div>
+            <div class="state-pill-desc">Client sent SYN packet and is awaiting server SYN-ACK.</div>
+          </div>
+          <div class="state-pill">
+            <div class="state-pill-name">3. SYN_RECEIVED</div>
+            <div class="state-pill-desc">Server received SYN, sent SYN-ACK, awaiting final client ACK.</div>
+          </div>
+          <div class="state-pill active">
+            <div class="state-pill-name">4. ESTABLISHED</div>
+            <div class="state-pill-desc">Connection active. Bi-directional application data transfer.</div>
+          </div>
+          <div class="state-pill">
+            <div class="state-pill-name">5. FIN_WAIT_1 / 2</div>
+            <div class="state-pill-desc">Active close initiated. Waiting for peer acknowledgment and peer FIN.</div>
+          </div>
+          <div class="state-pill active" style="border-color: var(--warning-border); background: var(--warning-subtle);">
+            <div class="state-pill-name" style="color: var(--warning-text);">6. TIME_WAIT (2MSL)</div>
+            <div class="state-pill-desc">Endpoint waits 2 × Maximum Segment Lifetime to ensure late duplicate packets expire.</div>
+          </div>
+          <div class="state-pill">
+            <div class="state-pill-name">7. CLOSED</div>
+            <div class="state-pill-desc">Socket descriptor fully reclaimed by the OS kernel for reallocation.</div>
+          </div>
+        </div>
+
+        <h3 class="content-h3">Why does TIME_WAIT exist?</h3>
+        <p class="content-p">
+          When an endpoint initiates an active close (by sending a <code>FIN</code> packet), it enters the <code>TIME_WAIT</code> state upon receiving the final ACK. It remains in this state for <strong>2MSL (2 × Maximum Segment Lifetime)</strong>. On Windows, the default duration is <strong>120 to 240 seconds</strong> (configurable via registry).
+        </p>
+
+        <p class="content-p">
+          <code>TIME_WAIT</code> serves two vital networking purposes:
+        </p>
+        <ul style="margin: 0 0 20px 24px; color: var(--text-secondary); line-height: 1.7;">
+          <li><strong>Graceful Teardown Acknowledgment:</strong> If the final ACK sent by the active closer is lost in transit, the remote peer will retransmit its FIN. The active closer must stay alive to re-send the ACK; otherwise, the peer receives a <code>RST</code> (Connection Reset) error instead of a clean close.</li>
+          <li><strong>Draining Stale Delayed Segments:</strong> Internet routers can delay packets. 2MSL guarantees that any duplicate packets lingering in network buffers expire before a new connection reuses the exact same 4-tuple (Source IP, Source Port, Dest IP, Dest Port).</li>
+        </ul>
+      </section>
+
+      <!-- SECTION 6: PORT EXHAUSTION & DIAGNOSTICS -->
+      <section class="content-section" id="port-exhaustion">
+        <div class="section-anchor">
+          <span class="section-num">06</span>
+          <h2 class="content-h2">Understanding Port Exhaustion on Windows</h2>
+        </div>
+
+        <p class="content-p">
+          When running local integration test suites, load-testing microservices, or spawning rapid short-lived HTTP connections without connection pooling (e.g. creating a new <code>fetch()</code> or <code>axios</code> client instance on every request without <code>keep-alive</code>), thousands of outbound sockets accumulate in <code>TIME_WAIT</code>.
+        </p>
+
+        <div class="callout callout-warning">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body">
+            <strong>WSAENOBUFS / WSAEADDRINUSE (Error 10048 / 10055)</strong>
+            Once all 16,384 ports in the dynamic range (<code>49152–65535</code>) are occupied by sockets lingering in <code>TIME_WAIT</code>, any new connection attempt fails immediately with <em>"No buffer space available"</em> or <em>"Address already in use"</em>.
+          </div>
+        </div>
+
+        <h3 class="content-h3">Diagnosing TIME_WAIT Sockets on Windows</h3>
+        <p class="content-p">
+          You can inspect active <code>TIME_WAIT</code> sockets using native PowerShell and Winsock commands:
+        </p>
+
+        <div class="code-window">
+          <div class="code-window-header">
+            <div class="code-window-title">
+              <div class="code-window-dots">
+                <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+              </div>
+              <span>PowerShell (Admin or User)</span>
+            </div>
+            <button class="btn-copy" onclick="copySnippet(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre class="code-content"># 1. Count sockets by state (see how many are stuck in TimeWait)
+Get-NetTCPConnection | Group-Object State | Select-Object Count, Name
+
+# 2. View dynamic ephemeral port range configuration
+netsh int ipv4 show dynamicport tcp
+
+# 3. Inspect specific local port listeners and owning processes
+Get-NetTCPConnection -LocalPort 3000, 5173, 8000 | Format-Table LocalAddress, LocalPort, State, OwningProcess</pre>
+        </div>
+
+        <h3 class="content-h3">Windows TCP Stack Tuning (Registry)</h3>
+        <p class="content-p">
+          For high-throughput local benchmarking or test environments, Microsoft provides registry parameters under <code>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters</code>:
+        </p>
+
+        <div class="code-window">
+          <div class="code-window-header">
+            <div class="code-window-title">
+              <div class="code-window-dots">
+                <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+              </div>
+              <span>Registry Tuning (High Throughput Testing)</span>
+            </div>
+            <button class="btn-copy" onclick="copySnippet(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre class="code-content"># Reduce TIME_WAIT delay from 240s to 30s
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "TcpTimedWaitDelay" -Value 30 -Type DWord
+
+# Expand maximum dynamic port range to 65534
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "MaxUserPort" -Value 65534 -Type DWord</pre>
+        </div>
+      </section>
+
+      <!-- SECTION 7: MOBILE LAN TESTING GUIDE -->
+      <section class="content-section" id="lan-mobile-guide">
+        <div class="section-anchor">
+          <span class="section-num">07</span>
+          <h2 class="content-h2">Practical Guide: Testing Localhost on Mobile Devices via Wi-Fi</h2>
+        </div>
+
+        <p class="content-p">
+          When building responsive web applications, testing touch gestures and viewport sizing on a physical iPhone or Android device connected to your local Wi-Fi router requires 3 essential configuration steps:
+        </p>
+
+        <h3 class="content-h3">Step 1: Bind your Dev Server to 0.0.0.0 (Wildcard Host)</h3>
+        <p class="content-p">
+          By default, tools like Vite, Next.js, and FastAPI bind strictly to <code>127.0.0.1</code> for security. Instruct them to listen on all interfaces:
+        </p>
+
+        <div class="code-window">
+          <div class="code-window-header">
+            <div class="code-window-title">
+              <div class="code-window-dots">
+                <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+              </div>
+              <span>Command Line Arguments by Framework</span>
+            </div>
+            <button class="btn-copy" onclick="copySnippet(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre class="code-content"># Vite (React / Vue / Svelte)
+npx vite --host 0.0.0.0
+
+# Next.js
+npx next dev -H 0.0.0.0 -p 3000
+
+# FastAPI / Uvicorn
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+# Django
+python manage.py runserver 0.0.0.0:8000
+
+# Express.js (in code)
+app.listen(3000, '0.0.0.0', () => console.log('Listening on 0.0.0.0:3000'));</pre>
+        </div>
+
+        <h3 class="content-h3">Step 2: Find Your Local Wi-Fi IPv4 Address</h3>
+        <p class="content-p">
+          Run <code>ipconfig</code> in Windows Terminal or PowerShell and locate the <strong>Wireless LAN adapter Wi-Fi</strong> IPv4 Address (e.g. <code>192.168.1.45</code>):
+        </p>
+
+        <div class="code-window">
+          <div class="code-window-header">
+            <div class="code-window-title">
+              <div class="code-window-dots">
+                <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+              </div>
+              <span>Terminal</span>
+            </div>
+            <button class="btn-copy" onclick="copySnippet(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre class="code-content">ipconfig
+# Look for:
+# Wireless LAN adapter Wi-Fi:
+#   IPv4 Address. . . . . . . . . . . : 192.168.1.45</pre>
+        </div>
+
+        <h3 class="content-h3">Step 3: Allow Inbound Traffic through Windows Defender Firewall</h3>
+        <p class="content-p">
+          Windows Defender Firewall blocks incoming connections from foreign IP addresses on your Wi-Fi by default. Add an explicit developer port rule via an elevated PowerShell session:
+        </p>
+
+        <div class="code-window">
+          <div class="code-window-header">
+            <div class="code-window-title">
+              <div class="code-window-dots">
+                <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+              </div>
+              <span>PowerShell (Run as Administrator)</span>
+            </div>
+            <button class="btn-copy" onclick="copySnippet(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre class="code-content"># Allow inbound TCP port 3000 for local development
+New-NetFirewallRule -DisplayName "Dev Server Port 3000" -Direction Inbound -LocalPort 3000 -Protocol TCP -Action Allow
+
+# Open your mobile browser and navigate to:
+# http://192.168.1.45:3000</pre>
+        </div>
+      </section>
+
+      <!-- SECTION 8: IPV6 & NODE.JS 18+ GOTCHAS -->
+      <section class="content-section" id="ipv6-node-gotchas">
+        <div class="section-anchor">
+          <span class="section-num">08</span>
+          <h2 class="content-h2">IPv6 Loopback (`::1`) & Node.js 18+ Gotchas</h2>
+        </div>
+
+        <p class="content-p">
+          Starting in <strong>Node.js 17 and 18</strong>, Node altered its internal DNS resolution behavior (<code>dns.lookup</code>) to align strictly with <strong>RFC 6724 (Happy Eyeballs / Default Address Selection)</strong>.
+        </p>
+
+        <p class="content-p">
+          Prior to Node 17, <code>localhost</code> always resolved to IPv4 <code>127.0.0.1</code> first. In Node 18, 20, and 22 on Windows, <code>localhost</code> resolves to IPv6 <code>::1</code> first.
+        </p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <strong>Why "ECONNREFUSED" happens with FastAPI or Python backends:</strong>
+            If your Python FastAPI backend is listening only on IPv4 <code>127.0.0.1:8000</code>, but your Node/Next.js frontend makes a request to <code>http://localhost:8000/api</code>, Node attempts to connect to <code>[::1]:8000</code>. Since nothing is listening on IPv6, the connection fails with <code>ECONNREFUSED</code>.
+          </div>
+        </div>
+
+        <h3 class="content-h3">How to Resolve localhost DNS Inconsistencies:</h3>
+        <ul style="margin: 0 0 20px 24px; color: var(--text-secondary); line-height: 1.7;">
+          <li><strong>Explicit IPv4 in Fetch:</strong> Change <code>http://localhost:8000</code> to <code>http://127.0.0.1:8000</code> in your frontend API client configuration.</li>
+          <li><strong>Node DNS Result Order Flag:</strong> Launch Node with <code>node --dns-result-order=ipv4first server.js</code>.</li>
+          <li><strong>Dual-Stack Backend:</strong> Ensure your backend server binds to <code>::</code> with <code>IPV6_V6ONLY=0</code> so it accepts both IPv4 and IPv6 loopback requests simultaneously.</li>
+        </ul>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+    <!-- UNIFIED 5-COLUMN MEGA FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../index.html" class="nav-brand">
+            <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
+            <span>PortPeek</span>
+            <span class="nav-badge-ver">v1.0</span>
+          </a>
+          <p>Ultra-lightweight native Windows system-tray utility for local development servers. Built with Win32 &amp; C++17.</p>
+          <div style="font-size:0.8rem; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">
+            <span>⚡ Standalone Target: ~500 KB</span>
+            <span>🧠 Memory Footprint: &lt; 8 MB</span>
+            <span>🛡️ 100% Offline &amp; Private</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Navigation</h5>
+          <ul class="footer-col-links">
+            <li><a href="../index.html">Product Overview</a></li>
+            <li><a href="../simulator/index.html">Windows 11 Simulator</a></li>
+            <li><a href="../conflicts/index.html">Conflict Solver</a></li>
+            <li><a href="../ports/index.html">Ports Directory (40+)</a></li>
+            <li><a href="../knowledge/index.html">Knowledge Hub</a></li>
+            <li><a href="../inside/index.html">Inside Architecture</a></li>
+            <li><a href="../blog/index.html">Engineering Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Popular Ports</h5>
+          <ul class="footer-col-links">
+            <li><a href="../ports/3000/index.html">Port 3000 (Next.js)</a></li>
+            <li><a href="../ports/5173/index.html">Port 5173 (Vite)</a></li>
+            <li><a href="../ports/5432/index.html">Port 5432 (Postgres)</a></li>
+            <li><a href="../ports/6379/index.html">Port 6379 (Redis)</a></li>
+            <li><a href="../ports/8000/index.html">Port 8000 (FastAPI)</a></li>
+            <li><a href="../ports/8080/index.html">Port 8080 (Spring)</a></li>
+            <li><a href="../ports/11434/index.html">Port 11434 (Ollama)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Standards &amp; Docs</h5>
+          <ul class="footer-col-links">
+            <li><a href="../knowledge/index.html#quad-tuple">TCP Socket Anatomy</a></li>
+            <li><a href="../knowledge/index.html#loopback">127.0.0.1 vs 0.0.0.0</a></li>
+            <li><a href="../knowledge/index.html#time-wait">TIME_WAIT Diagnostics</a></li>
+            <li><a href="../knowledge/index.html#mobile">Mobile Wi-Fi Testing</a></li>
+            <li><a href="../inside/index.html#pipeline">Direct Win32 Kernel Query</a></li>
+            <li><a href="../inside/index.html#security">Least Privilege Security</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Open Source</h5>
+          <ul class="footer-col-links">
+            <li><a href="https://github.com/i-ayushsingh/PortPeek" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/releases/latest" target="_blank" rel="noopener noreferrer">Latest Release</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/issues" target="_blank" rel="noopener noreferrer">Report an Issue</a></li>
+            <li><a href="https://github.com/i-ayushsingh/PortPeek/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 PortPeek. Open-source under MIT License.</span>
+        <span>Crafted with precision for Windows developers.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Copy button helper
+    function copySnippet(btn) {
+      const code = btn.closest('.code-window').querySelector('.code-content').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Copied!</span>`;
+        btn.style.color = 'var(--success-text)';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.color = '';
+        }, 2000);
+      });
+    }
+
+    // ScrollSpy for Sidebar TOC Navigation
+    document.addEventListener('DOMContentLoaded', () => {
+      const links = document.querySelectorAll('.toc-link');
+      const sections = document.querySelectorAll('.content-section');
+
+      function updateActiveToc() {
+        let currentSectionId = '';
+        const scrollPos = window.scrollY + 120;
+
+        sections.forEach(section => {
+          if (section.offsetTop <= scrollPos) {
+            currentSectionId = section.getAttribute('id');
+          }
+        });
+
+        links.forEach(link => {
+          if (link.getAttribute('href') === `#${currentSectionId}`) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateActiveToc, { passive: true });
+      updateActiveToc();
+    });
+  </script>
+</body>
+</html>

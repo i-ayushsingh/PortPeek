@@ -1,0 +1,60 @@
+/* ==========================================================================
+   PORTPEEK SHARED DESIGN TOKENS & THEME VARIABLES
+   ========================================================================== */
+
+:root {
+  --bg-app: #07090e;
+  --bg-surface: #0d111a;
+  --bg-surface-elevated: #131826;
+  --bg-surface-active: #1a2236;
+  --bg-code-block: #0b0f19;
+  
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-muted: rgba(255, 255, 255, 0.08);
+  --border-focus: #38bdf8;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-disabled: #475569;
+  
+  --color-accent: #38bdf8;
+  --color-accent-subtle: rgba(56, 189, 248, 0.15);
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #f43f5e;
+  
+  --font-family: "Segoe UI Variable Display", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
+  
+  --container-max-width: 1200px;
+  --container-wide-max-width: 1320px;
+  --duration-fast: 0.15s;
+  --duration-normal: 0.25s;
+}
+
+[data-theme="light"] {
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f1f5f9;
+  --bg-surface-active: #e2e8f0;
+  --bg-code-block: #0f172a;
+  
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --border-muted: rgba(0, 0, 0, 0.1);
+  --border-focus: #0284c7;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-disabled: #94a3b8;
+  
+  --color-accent: #0284c7;
+  --color-accent-subtle: rgba(2, 132, 199, 0.12);
+}
