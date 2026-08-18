@@ -38,17 +38,20 @@ jobs:
     - name: Build PortPeek Release Binary
       run: cmd /c build.bat
 
-    - name: Upload Build Artifact
+    - name: Build PortPeek NSIS Installer
+      run: cmd /c build_installer.bat
+
+    - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: PortPeek-Windows-x64
-        path: PortPeek.exe
+        name: PortPeek-Windows-Installer
+        path: PortPeek-Setup-*.exe
 
     - name: Create GitHub Release
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v2
       with:
-        files: PortPeek.exe
+        files: PortPeek-Setup-*.exe
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

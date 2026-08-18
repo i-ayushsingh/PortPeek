@@ -10,9 +10,9 @@ if %ERRORLEVEL% NEQ 0 (
     )
 )
 
-cl.exe /nologo /O1 /EHsc /std:c++17 /utf-8 /Isrc tests\test_runner.cpp src\ports.cpp src\process.cpp src\probe.cpp src\theme.cpp src\config.cpp ^
+cl.exe /nologo /O1 /EHsc /std:c++17 /utf-8 /Isrc tests\test_runner.cpp src\ports.cpp src\process.cpp src\probe.cpp src\theme.cpp src\config.cpp src\alias.cpp src\lan.cpp src\qrcode.cpp src\qrcodegen.c src\tunnel.cpp ^
     /Fe:test_runner.exe ^
-    ws2_32.lib iphlpapi.lib psapi.lib dwmapi.lib uxtheme.lib shell32.lib user32.lib advapi32.lib
+    ws2_32.lib iphlpapi.lib psapi.lib dwmapi.lib uxtheme.lib shell32.lib user32.lib advapi32.lib gdi32.lib
 
 if %ERRORLEVEL% EQU 0 (
     echo.

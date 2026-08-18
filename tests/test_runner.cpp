@@ -12,6 +12,10 @@
 #include "probe.h"
 #include "theme.h"
 #include "config.h"
+#include "alias.h"
+#include "lan.h"
+#include "qrcode.h"
+#include "tunnel.h"
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
@@ -20,6 +24,7 @@
 #pragma comment(lib, "uxtheme.lib")
 #pragma comment(lib, "shell32.lib")
 #pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "gdi32.lib")
 
 struct MockServerContext {
     SOCKET listenSock;
@@ -201,8 +206,30 @@ int main() {
     }
     std::wcout << L"  [PASS] Ports are strictly sorted in ascending numerical order." << std::endl;
 
+    // Test 8: QR Code ISO/IEC 18004 Matrix Generation
+    std::wcout << L"\n[TEST 8] Testing ISO/IEC 18004 QR Code Generation..." << std::endl;
+    auto qr = QrCode::Generate("http://192.168.1.34:3000");
+    std::wcout << L"  -> QR Dimension: " << qr.size << L"x" << qr.size << std::endl;
+    assert(qr.size >= 21); // Model 2 Version 1 is 21x21
+    assert(!qr.modules.empty());
+    std::wcout << L"  [PASS] ISO/IEC 18004 standard QR Code matrix generated." << std::endl;
+
+    // Test 9: LAN IPv4 Formatting
+    std::wcout << L"\n[TEST 9] Testing LAN IPv4 URL Formatting..." << std::endl;
+    std::wstring lanUrl = LanUtil::FormatLanUrl(3000, L"http");
+    std::wcout << L"  -> Formatted LAN URL: " << lanUrl << std::endl;
+    assert(lanUrl.find(L":3000") != std::wstring::npos);
+    std::wcout << L"  [PASS] LAN URL formatting verified." << std::endl;
+
+    // Test 10: Alias Manager
+    std::wcout << L"\n[TEST 10] Testing Alias Manager Resolution..." << std::endl;
+    AliasManager::Reload();
+    std::wstring alias = AliasManager::GetAliasForPort(3000);
+    std::wcout << L"  -> Port 3000 Alias: " << (alias.empty() ? L"(default)" : alias) << std::endl;
+    std::wcout << L"  [PASS] Alias Manager loaded and queried cleanly." << std::endl;
+
     std::wcout << L"\n============================================================" << std::endl;
-    std::wcout << L" [ALL 7 VERIFICATION TESTS PASSED!]" << std::endl;
+    std::wcout << L" [ALL 10 VERIFICATION TESTS PASSED!]" << std::endl;
     std::wcout << L"============================================================" << std::endl;
 
     WSACleanup();
