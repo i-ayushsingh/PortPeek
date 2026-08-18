@@ -8,7 +8,7 @@ SetCompressor /SOLID lzma
 RequestExecutionLevel user
 
 !define PRODUCT_NAME "PortPeek"
-!define PRODUCT_VERSION "0.2.0"
+!define PRODUCT_VERSION "0.2.1"
 !define PRODUCT_PUBLISHER "PortPeek"
 !define PRODUCT_WEB_SITE "https://i-ayushsingh.github.io/PortPeek/"
 !define PRODUCT_EXE "PortPeek.exe"
@@ -17,7 +17,7 @@ RequestExecutionLevel user
 !define PRODUCT_UNINST_ROOT_KEY HKCU
 
 ; Output file name
-OutFile "PortPeek-Setup-v0.2.0.exe"
+OutFile "PortPeek-Setup-v0.2.1.exe"
 
 ; Default install directory ($LOCALAPPDATA\Programs\PortPeek)
 InstallDir "$LOCALAPPDATA\Programs\PortPeek"

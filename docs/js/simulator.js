@@ -443,7 +443,7 @@
         <div class="swagger-header">
           <div class="swagger-title">
             <span>FastAPI Swagger UI</span>
-            <span class="swagger-badge">v0.2.0</span>
+            <span class="swagger-badge">v0.2.1</span>
           </div>
           <span style="font-size:0.75rem; color:#94a3b8; font-family:var(--font-mono);">/openapi.json</span>
         </div>

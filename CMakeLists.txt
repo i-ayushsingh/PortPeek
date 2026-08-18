@@ -36,6 +36,8 @@ set(SOURCE_FILES
     src/tunnel.h
     src/alias.cpp
     src/alias.h
+    src/app_discovery.cpp
+    src/app_discovery.h
     src/resource.h
 )
 

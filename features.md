@@ -1,11 +1,11 @@
 # PortPeek — Feature Specifications & Status (`features.md`)
 
-This document specifies the architecture, user experience, and technical implementation for all developer productivity features in PortPeek v0.2.0.
+This document specifies the architecture, user experience, and technical implementation for all developer productivity features in PortPeek v0.2.1.
 
 ---
 
 ## 1. 📱 Mobile LAN Tester & QR Code ("Test on Phone")
-**Status:** ✅ **Shipped & Verified in v0.2.0**
+**Status:** ✅ **Shipped & Verified in v0.2.1**
 
 ### Overview
 When building responsive web applications, frontend developers constantly need to test UI, touch gestures, safe areas, and viewport rendering on physical iOS/Android devices connected to the same Wi-Fi network.
@@ -28,7 +28,7 @@ When building responsive web applications, frontend developers constantly need t
 ---
 
 ## 2. 🌐 One-Click Public Tunnel (Cloudflare Bridge)
-**Status:** ✅ **Shipped & Verified in v0.2.0**
+**Status:** ✅ **Shipped & Verified in v0.2.1**
 
 ### Overview
 Developers frequently need to share a work-in-progress localhost site with clients, remote teammates, or webhook endpoints (e.g., Stripe, GitHub, Twilio) without deploying to staging or configuring router port forwarding.
@@ -49,7 +49,7 @@ Developers frequently need to share a work-in-progress localhost site with clien
 ---
 
 ## 3. ⏱️ Real-Time Health & Latency Meter
-**Status:** ✅ **Shipped & Verified in v0.2.0**
+**Status:** ✅ **Shipped & Verified in v0.2.1**
 
 ### Overview
 Shows live responsiveness metrics next to running servers so developers know immediately if their backend is fast, slowing down, or completely hung/deadlocked.
@@ -72,7 +72,7 @@ Shows live responsiveness metrics next to running servers so developers know imm
 ---
 
 ## 4. 📌 Custom Port Aliases & Workspace `.portpeek`
-**Status:** ✅ **Shipped & Verified in v0.2.0**
+**Status:** ✅ **Shipped & Verified in v0.2.1**
 
 ### Overview
 Developers working on complex microservices or backend stacks can assign human-readable custom names pinned to their database and service ports instead of generic executable names.
@@ -100,7 +100,7 @@ Developers working on complex microservices or backend stacks can assign human-r
 ---
 
 ## 5. 🛠️ Categorized System Background Processes
-**Status:** ✅ **Shipped & Verified in v0.2.0**
+**Status:** ✅ **Shipped & Verified in v0.2.1**
 
 ### Overview
 Windows typically runs 20–40 background processes listening on internal RPC, SMB, and ephemeral ports. To prevent visual clutter, PortPeek organizes background processes into 3 clean sub-categories:
@@ -111,9 +111,9 @@ Windows typically runs 20–40 background processes listening on internal RPC, S
 ---
 
 ## 6. 📦 NSIS Windows Installer (`installer.nsi`)
-**Status:** ✅ **Shipped & Verified in v0.2.0**
+**Status:** ✅ **Shipped & Verified in v0.2.1**
 
-- Modern UI 2 per-user installer (`PortPeek-Setup-v0.2.0.exe`, ~365 KB).
+- Modern UI 2 per-user installer (`PortPeek-Setup-v0.2.1.exe`, ~365 KB).
 - Installs to `%LOCALAPPDATA%\Programs\PortPeek` without requiring Administrator privileges.
 - Includes Start Menu shortcuts, optional Desktop shortcut, and clean Windows uninstaller.
 - Single-command build via `build_installer.bat`.

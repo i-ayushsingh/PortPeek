@@ -41,7 +41,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo [*] Compiling C++ source files...
 cl.exe /nologo /O1 /MT /GL /Gy /EHsc /std:c++17 /utf-8 /W4 /WX- /I"src" ^
     src\main.cpp src\tray.cpp src\ports.cpp src\process.cpp src\probe.cpp src\theme.cpp src\config.cpp ^
-    src\qrcode.cpp src\qrcodegen.c src\lan.cpp src\tunnel.cpp src\alias.cpp ^
+    src\qrcode.cpp src\qrcodegen.c src\lan.cpp src\tunnel.cpp src\alias.cpp src\app_discovery.cpp ^
     res\resource.res ^
     /Fe:PortPeek.exe ^
     /link /NOLOGO /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF ^

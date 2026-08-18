@@ -408,6 +408,22 @@ void TrayManager::RebuildFlyoutLayout() {
             m_flyoutItems.push_back(item);
         }
 
+        // 2b. Optional Discovered App Sessions (e.g. Ephe)
+        if (!m_activeEpheSessions.empty() || EpheLauncher::IsEpheAvailable()) {
+            FlyoutItem epheItem;
+            epheItem.action = FlyoutItemAction::NavToEpheSessions;
+            epheItem.icon = FlyoutIconType::EpheApp;
+            if (!m_activeEpheSessions.empty()) {
+                epheItem.title = L"Ephe Sessions (" + std::to_wstring(m_activeEpheSessions.size()) + L")";
+            } else {
+                epheItem.title = L"Ephe Sessions";
+            }
+            epheItem.hasChevron = true;
+            epheItem.rect = { 6, currentY, width - 6, currentY + 36 };
+            currentY += 38;
+            m_flyoutItems.push_back(epheItem);
+        }
+
         // 3. System Background Categorized Entry
         {
             FlyoutItem sysItem;
@@ -1039,6 +1055,87 @@ void TrayManager::RebuildFlyoutLayout() {
         m_flyoutItems.push_back(hotkeyItem);
         break;
     }
+
+    case FlyoutView::EpheSessionsView: {
+        // 1. Back Header
+        FlyoutItem backItem;
+        backItem.action = FlyoutItemAction::BackToMain;
+        backItem.icon = FlyoutIconType::BackArrow;
+        if (!m_activeEpheSessions.empty()) {
+            backItem.title = L"Ephe Sessions (" + std::to_wstring(m_activeEpheSessions.size()) + L")";
+        } else {
+            backItem.title = L"Ephe Sessions";
+        }
+        backItem.rect = { 6, currentY, width - 6, currentY + 36 };
+        currentY += 38;
+        m_flyoutItems.push_back(backItem);
+
+        FlyoutItem sep;
+        sep.action = FlyoutItemAction::Separator;
+        sep.rect = { 6, currentY, width - 6, currentY + 8 };
+        currentY += 9;
+        m_flyoutItems.push_back(sep);
+
+        // 2. Active Ephe Sessions
+        if (!m_activeEpheSessions.empty()) {
+            for (const auto& sess : m_activeEpheSessions) {
+                FlyoutItem item;
+                item.action = FlyoutItemAction::OpenEpheSession;
+                item.icon = FlyoutIconType::Dot;
+                item.portText = std::to_wstring(sess.port);
+                item.title = sess.sessionName;
+                item.subtitle = sess.applicationName;
+                if (sess.connectedDevices > 0) {
+                    item.subtitle += L" • " + std::to_wstring(sess.connectedDevices) + L" device" + (sess.connectedDevices > 1 ? L"s" : L"");
+                }
+                item.extraData = sess.GetLaunchUrl();
+                item.hasChevron = true;
+                item.rect = { 6, currentY, width - 6, currentY + 48 };
+                currentY += 50;
+                m_flyoutItems.push_back(item);
+            }
+        } else {
+            FlyoutItem emptyItem;
+            emptyItem.action = FlyoutItemAction::None;
+            emptyItem.icon = FlyoutIconType::Dot;
+            emptyItem.title = L"No active sessions";
+            emptyItem.rect = { 6, currentY, width - 6, currentY + 36 };
+            currentY += 38;
+            m_flyoutItems.push_back(emptyItem);
+        }
+
+        // 3. Actions Separator
+        FlyoutItem botSep;
+        botSep.action = FlyoutItemAction::Separator;
+        botSep.rect = { 6, currentY, width - 6, currentY + 8 };
+        currentY += 9;
+        m_flyoutItems.push_back(botSep);
+
+        // 4. New Session
+        FlyoutItem newItem;
+        newItem.action = FlyoutItemAction::LaunchNewEpheSession;
+        newItem.icon = FlyoutIconType::Plus;
+        newItem.title = L"New Session";
+        newItem.hasChevron = false;
+        newItem.rect = { 6, currentY, width - 6, currentY + 36 };
+        currentY += 38;
+        m_flyoutItems.push_back(newItem);
+
+        // 5. Open All Sessions
+        FlyoutItem openAll;
+        openAll.action = FlyoutItemAction::OpenAllEpheSessions;
+        openAll.icon = FlyoutIconType::Globe;
+        if (!m_activeEpheSessions.empty()) {
+            openAll.title = L"⚡ Open All Sessions (" + std::to_wstring(m_activeEpheSessions.size()) + L")";
+        } else {
+            openAll.title = L"Open All Sessions";
+        }
+        openAll.hasChevron = false;
+        openAll.rect = { 6, currentY, width - 6, currentY + 36 };
+        currentY += 38;
+        m_flyoutItems.push_back(openAll);
+        break;
+    }
     }
 
     // Resize window if open while keeping locked position above system tray
@@ -1062,6 +1159,7 @@ void TrayManager::ShowFlyout(int x, int y) {
     HideFlyout();
 
     m_activeMenuPorts = EnumerateListeningTcpPorts();
+    m_activeEpheSessions = AppDiscoveryManager::Instance().DiscoverAllVerifiedSessions();
     m_currentView = FlyoutView::Main;
     RebuildFlyoutLayout();
 
@@ -1221,6 +1319,40 @@ void TrayManager::HandleItemClick(const FlyoutItem& item) {
         break;
     }
 
+    case FlyoutItemAction::NavToEpheSessions: {
+        m_currentView = FlyoutView::EpheSessionsView;
+        RebuildFlyoutLayout();
+        InvalidateRect(m_hFlyoutWnd, nullptr, TRUE);
+        break;
+    }
+
+    case FlyoutItemAction::OpenEpheSession: {
+        if (!item.extraData.empty()) {
+            ShellExecuteW(nullptr, L"open", item.extraData.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+        }
+        HideFlyout();
+        break;
+    }
+
+    case FlyoutItemAction::OpenAllEpheSessions: {
+        for (const auto& sess : m_activeEpheSessions) {
+            std::wstring launchUrl = sess.GetLaunchUrl();
+            if (!launchUrl.empty()) {
+                ShellExecuteW(nullptr, L"open", launchUrl.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+                Sleep(100);
+            }
+        }
+        HideFlyout();
+        break;
+    }
+
+    case FlyoutItemAction::LaunchNewEpheSession: {
+        EpheLauncher::LaunchNewSession();
+        HideFlyout();
+        SetTimer(m_hWnd, REFRESH_FEEDBACK_TIMER_ID, 800, nullptr);
+        break;
+    }
+
     case FlyoutItemAction::NavToDeveloperTools: {
         m_currentView = FlyoutView::DeveloperTools;
         RebuildFlyoutLayout();
@@ -1361,6 +1493,7 @@ void TrayManager::HandleItemClick(const FlyoutItem& item) {
 
     case FlyoutItemAction::Refresh: {
         m_activeMenuPorts = EnumerateListeningTcpPorts();
+        m_activeEpheSessions = AppDiscoveryManager::Instance().DiscoverAllVerifiedSessions();
         SyncTrayState();
         m_justRefreshed = true;
         RebuildFlyoutLayout();
@@ -1532,6 +1665,7 @@ LRESULT CALLBACK TrayManager::FlyoutWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                 break;
             }
 
+            case FlyoutItemAction::OpenEpheSession:
             case FlyoutItemAction::SelectPhonePort:
             case FlyoutItemAction::OpenPort: {
                 // Status Dot (Dynamic Latency/Health Color)
@@ -1609,9 +1743,20 @@ LRESULT CALLBACK TrayManager::FlyoutWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                 break;
             }
 
+            case FlyoutItemAction::NavToEpheSessions:
             case FlyoutItemAction::NavToSystemBackground: {
-                // Left Grey Dot
-                {
+                // Left Grey Dot / App Glyph
+                if (item.icon == FlyoutIconType::EpheApp) {
+                    HFONT hIconFont = CreateSegoeIconFont(11);
+                    HGDIOBJ oIF = SelectObject(memDC, hIconFont);
+                    SetTextColor(memDC, colMuted);
+
+                    RECT iconRc = { item.rect.left + 10, item.rect.top, item.rect.left + 28, item.rect.bottom };
+                    DrawTextW(memDC, L"\uE8A5", -1, &iconRc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+                    SelectObject(memDC, oIF);
+                    DeleteObject(hIconFont);
+                } else {
                     HBRUSH hDotBrush = CreateSolidBrush(colGrey);
                     HPEN hNullPen = static_cast<HPEN>(GetStockObject(NULL_PEN));
                     HGDIOBJ oDotB = SelectObject(memDC, hDotBrush);
@@ -1668,6 +1813,8 @@ LRESULT CALLBACK TrayManager::FlyoutWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                 // Action Glyph via Segoe Fluent Icons / Segoe MDL2 Assets
                 const wchar_t* glyphStr = nullptr;
                 switch (item.icon) {
+                case FlyoutIconType::EpheApp:           glyphStr = L"\uE8A5"; break; // Ephe Document
+                case FlyoutIconType::Plus:              glyphStr = L"\uE710"; break; // Plus / Add / New
                 case FlyoutIconType::CopyLink:          glyphStr = L"\uE71B"; break; // Link icon
                 case FlyoutIconType::Phone:             glyphStr = L"\uE8EA"; break; // Mobile Phone
                 case FlyoutIconType::Globe:             glyphStr = L"\uE774"; break; // Globe / Public Network

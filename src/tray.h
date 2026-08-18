@@ -9,6 +9,7 @@
 #include <cstdint>
 #include "ports.h"
 #include "qrcode.h"
+#include "app_discovery.h"
 
 enum class FlyoutView {
     Main,
@@ -22,7 +23,8 @@ enum class FlyoutView {
     SelectPhonePortView,
     TestOnPhone,
     PublicTunnel,
-    PortAliases
+    PortAliases,
+    EpheSessionsView
 };
 
 enum class FlyoutItemAction {
@@ -43,6 +45,10 @@ enum class FlyoutItemAction {
     NavToTestOnPhone,
     NavToPublicTunnel,
     NavToPortAliases,
+    NavToEpheSessions,
+    OpenEpheSession,
+    OpenAllEpheSessions,
+    LaunchNewEpheSession,
     CopyUrlDirect,
     CopyLanUrl,
     CopyAllMarkdown,
@@ -79,7 +85,9 @@ enum class FlyoutIconType {
     Pin,
     IdeTools,
     WinServices,
-    InternalBox
+    InternalBox,
+    EpheApp,
+    Plus
 };
 
 struct FlyoutItem {
@@ -145,11 +153,12 @@ private:
     FlyoutView                  m_currentView = FlyoutView::Main;
     size_t                      m_selectedPortIndex = 0;
 
-    std::vector<ListeningPort>  m_activeMenuPorts;
-    std::vector<FlyoutItem>     m_flyoutItems;
-    QrCode::QrMatrix            m_currentQr;
-    RECT                        m_qrRect = { 0, 0, 0, 0 };
-    uint16_t                    m_phoneTargetPort = 0;
-    std::wstring                m_phoneTargetLanUrl;
-    bool                        m_justRefreshed = false;
+    std::vector<ListeningPort>    m_activeMenuPorts;
+    std::vector<DiscoveredSession> m_activeEpheSessions;
+    std::vector<FlyoutItem>       m_flyoutItems;
+    QrCode::QrMatrix              m_currentQr;
+    RECT                          m_qrRect = { 0, 0, 0, 0 };
+    uint16_t                      m_phoneTargetPort = 0;
+    std::wstring                  m_phoneTargetLanUrl;
+    bool                          m_justRefreshed = false;
 };

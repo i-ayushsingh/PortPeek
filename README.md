@@ -49,7 +49,7 @@
 
 Download the official Windows installer:
 
-👉 **[Download PortPeek-Setup-v0.2.0.exe](https://github.com/i-ayushsingh/PortPeek/releases/latest)** *(~365 KB, Windows 11 & 10 x64)*
+👉 **[Download PortPeek-Setup-v0.2.1.exe](https://github.com/i-ayushsingh/PortPeek/releases/latest)** *(~365 KB, Windows 11 & 10 x64)*
 
 - 🚀 **Zero-Friction Per-User Installation:** Installs to `%LOCALAPPDATA%\Programs\PortPeek` with zero UAC Administrator prompt requirements.
 - 🪟 **Seamless Shell Integration:** Adds Start Menu shortcuts, optional desktop shortcut, and a clean uninstaller in Windows Settings.

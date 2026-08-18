@@ -35,7 +35,7 @@ echo [*] Compiling installer with NSIS...
 if %ERRORLEVEL% EQU 0 (
     echo.
     echo ============================================================
-    echo  [OK] Installer Build Succeeded: PortPeek-Setup-v0.2.0.exe
+    echo  [OK] Installer Build Succeeded: PortPeek-Setup-v0.2.1.exe
     echo ============================================================
 ) else (
     echo [!] NSIS compilation failed with error code %ERRORLEVEL%.
