@@ -530,7 +530,7 @@
       <a href="../index.html" class="nav-brand">
         <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
         <span>PortPeek</span>
-        <span class="nav-badge-ver">v1.0</span>
+        <span class="nav-badge-ver">v0.2.0</span>
       </a>
 
       <nav class="nav-links" id="navLinks">
@@ -590,6 +590,14 @@
         <a href="#offline-privacy" class="toc-link">
           <span>7. Offline Privacy Audit</span>
           <span class="toc-badge">0-Tel</span>
+        </a>
+        <a href="#mobile-qr-engine" class="toc-link">
+          <span>8. Mobile LAN & QR Engine</span>
+          <span class="toc-badge">ISO QR</span>
+        </a>
+        <a href="#tunnels-and-aliases" class="toc-link">
+          <span>9. Tunnels & Port Aliases</span>
+          <span class="toc-badge">Cloud</span>
         </a>
       </nav>
 
@@ -1139,6 +1147,61 @@ std::wstring GetProcessCommandLine(DWORD pid) {
         </ul>
       </section>
 
+      <!-- SECTION 8: MOBILE LAN & QR ENGINE -->
+      <section class="content-section" id="mobile-qr-engine">
+        <div class="section-anchor">
+          <span class="section-num">08</span>
+          <h2 class="content-h2">Mobile LAN IP Resolution &amp; ISO/IEC 18004 QR Engine</h2>
+        </div>
+
+        <p class="content-p">
+          Testing responsive web applications on physical smartphones connected to your local Wi-Fi network requires two distinct technical challenges: discovering your non-loopback local network IPv4 address, and generating a 100% compliant QR code directly in GDI memory without third-party dependencies.
+        </p>
+
+        <h3 class="content-h3">1. LAN IPv4 Resolution via GetAdaptersAddresses</h3>
+        <p class="content-p">
+          Instead of invoking slow CLI utilities like <code>ipconfig.exe</code>, PortPeek queries the Windows IP Helper API (<code>GetAdaptersAddresses</code> with <code>GAA_FLAG_INCLUDE_PREFIX</code>). It iterates active physical network adapters, prioritizes <code>IF_TYPE_IEEE80211</code> (Wi-Fi) and <code>IF_TYPE_ETHERNET_CSMACD</code> (Ethernet) with operational status <code>IfOperStatusUp</code>, and filters out loopback (<code>127.x.x.x</code>) and link-local auto-configuration (<code>169.254.x.x</code>) ranges.
+        </p>
+
+        <h3 class="content-h3">2. ISO/IEC 18004 Standard QR Code Generation</h3>
+        <p class="content-p">
+          PortPeek compiles a pure C implementation of the official Nayuki Model 2 QR engine (<code>qrcodegen.c</code>). It dynamically generates standard QR symbols with:
+        </p>
+        <ul style="margin: 0 0 20px 24px; color: var(--text-secondary); line-height: 1.7;">
+          <li><strong>Reed-Solomon Galois Field Arithmetic:</strong> Computes error-correction generator polynomials ($GF(2^8)$ modulo $x^8 + x^4 + x^3 + x^2 + 1$) for Error Correction Level M (~15% recovery capacity).</li>
+          <li><strong>Penalty Function Evaluation:</strong> Evaluates all 8 standard mask formulas to select the pattern with the lowest penalty score across runs, 3x3 blocks, finder-like patterns, and balance ratio.</li>
+          <li><strong>Double-Buffered 4-Module Quiet Zone:</strong> Renders crisp 7px modules onto an isolated white backing card with an exact 28px quiet zone, ensuring instant recognition by iOS Camera, Google Lens, and Android bar scanners.</li>
+        </ul>
+      </section>
+
+      <!-- SECTION 9: TUNNELS, ALIASES & LATENCY -->
+      <section class="content-section" id="tunnels-and-aliases">
+        <div class="section-anchor">
+          <span class="section-num">09</span>
+          <h2 class="content-h2">Cloudflare Quick Tunnels, Custom Aliases &amp; Latency Probing</h2>
+        </div>
+
+        <p class="content-p">
+          PortPeek integrates first-class support for sharing localhost previews with remote clients and assigning custom human-readable aliases to microservices:
+        </p>
+
+        <h3 class="content-h3">1. Non-Blocking Cloudflare Quick Tunnel Spawning</h3>
+        <p class="content-p">
+          When triggering a public preview, PortPeek spawns <code>cloudflared.exe tunnel --url http://localhost:&lt;port&gt;</code> using Win32 <code>CreateProcessW</code> with <code>CREATE_NO_WINDOW</code> and redirected standard error pipes. An asynchronous reader thread scans output chunks for the ephemeral <code>https://*.trycloudflare.com</code> URL and copies it directly to the Windows clipboard within milliseconds.
+        </p>
+
+        <h3 class="content-h3">2. Workspace <code>.portpeek</code> Alias Discovery Hierarchy</h3>
+        <p class="content-p">
+          PortPeek looks for project metadata in a clean 4-tier discovery order:
+        </p>
+        <ol style="margin: 0 0 20px 24px; color: var(--text-secondary); line-height: 1.7;">
+          <li><strong>Workspace JSON:</strong> <code>.portpeek</code> or <code>portpeek.json</code> in the detected project directory.</li>
+          <li><strong>User Global Configuration:</strong> <code>%USERPROFILE%\.portpeek\config.json</code>.</li>
+          <li><strong>Registry Overrides:</strong> <code>HKCU\Software\PortPeek\Aliases</code>.</li>
+          <li><strong>Built-in Framework Heuristics:</strong> Automatic identification of Next.js, Vite, FastAPI, Django, Ollama, Redis, PostgreSQL, and more.</li>
+        </ol>
+      </section>
+
     </main>
   </div>
 
@@ -1151,7 +1214,7 @@ std::wstring GetProcessCommandLine(DWORD pid) {
           <a href="../index.html" class="nav-brand">
             <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
             <span>PortPeek</span>
-            <span class="nav-badge-ver">v1.0</span>
+            <span class="nav-badge-ver">v0.2.0</span>
           </a>
           <p>Ultra-lightweight native Windows system-tray utility for local development servers. Built with Win32 &amp; C++17.</p>
           <div style="font-size:0.8rem; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">

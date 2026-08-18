@@ -1,6 +1,8 @@
 #include "ports.h"
 #include "process.h"
 #include "probe.h"
+#include "alias.h"
+#include "lan.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -197,11 +199,27 @@ std::vector<ListeningPort> EnumerateListeningTcpPorts() {
         entry.isDevServer   = isDev;
         entry.protocol      = L"http";
 
-        // Perform fast 25ms loopback probe for dev servers
-        if (isDev) {
-            auto probe = NetProbe::ProbeLoopbackPort(port, 25);
+        // Custom Alias check (.portpeek)
+        std::wstring alias = AliasManager::GetAliasForPort(port);
+        if (!alias.empty()) {
+            entry.customAlias = alias;
+            entry.projectName = alias;
+            if (port == 5432 || port == 3306 || port == 6379 || port == 27017 || port == 11434) {
+                entry.isDevServer = true;
+            }
+        }
+
+        entry.lanUrl = LanUtil::FormatLanUrl(port, entry.protocol);
+
+        // Perform fast non-blocking loopback probe for dev servers & aliased ports
+        if (entry.isDevServer) {
+            auto probe = NetProbe::ProbeLoopbackPort(port, 30);
+            entry.latencyMs = probe.latencyMs;
+            entry.health    = probe.health;
+
             if (probe.isHttps) {
                 entry.protocol = L"https";
+                entry.lanUrl   = LanUtil::FormatLanUrl(port, L"https");
             }
 
             std::wstring lowerTitle = ToLower(probe.htmlTitle);
@@ -209,10 +227,10 @@ std::vector<ListeningPort> EnumerateListeningTcpPorts() {
 
             if (lowerProc == L"code.exe" || lowerTitle.find(L"listing directory") != std::wstring::npos || lowerTitle.find(L"index of /") != std::wstring::npos) {
                 if (lowerProc == L"code.exe" || port == 5500 || port == 5501) {
-                    entry.projectName = L"VS Code Live Server";
+                    if (entry.customAlias.empty()) entry.projectName = L"VS Code Live Server";
                     entry.framework   = L"Live Server";
                 } else {
-                    entry.projectName = L"Directory Server";
+                    if (entry.customAlias.empty()) entry.projectName = L"Directory Server";
                 }
                 entry.pageTitle = L"";
             } else if (!probe.htmlTitle.empty()) {

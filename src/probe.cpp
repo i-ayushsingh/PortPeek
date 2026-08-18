@@ -259,6 +259,15 @@ HttpProbeResult ProbeLoopbackPort(uint16_t port, uint32_t timeoutMs) {
         }
     }
 
+    result.latencyMs = (result.elapsedMs > 0.0) ? static_cast<int>(result.elapsedMs) : 1;
+    if (result.elapsedMs <= 50.0) {
+        result.health = PortHealth::Healthy;
+    } else if (result.elapsedMs <= 1000.0) {
+        result.health = PortHealth::Slow;
+    } else {
+        result.health = PortHealth::Hung;
+    }
+
     return result;
 }
 

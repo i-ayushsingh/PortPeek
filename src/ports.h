@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include "probe.h"
 
 struct ListeningPort {
     uint16_t port = 0;
@@ -17,7 +18,11 @@ struct ListeningPort {
     std::wstring framework;          // Detected framework (e.g. "Next.js", "FastAPI", "Vite", "Docker")
     std::wstring commandLine;        // Full command line
     std::wstring protocol = L"http"; // "http" or "https"
+    std::wstring customAlias;        // User or workspace alias (e.g. "Main Postgres DB")
+    std::wstring lanUrl;             // Local Wi-Fi URL (e.g. "http://192.168.1.45:3000")
     size_t memoryMb = 0;             // Process RAM working set in MB
+    int latencyMs = 0;               // Measured socket RTT in ms
+    NetProbe::PortHealth health = NetProbe::PortHealth::Healthy;
     bool isDevServer = false;        // True if classified as active developer/web server
 };
 

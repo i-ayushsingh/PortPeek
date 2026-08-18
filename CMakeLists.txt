@@ -26,6 +26,16 @@ set(SOURCE_FILES
     src/theme.h
     src/config.cpp
     src/config.h
+    src/qrcode.cpp
+    src/qrcode.h
+    src/qrcodegen.c
+    src/qrcodegen.h
+    src/lan.cpp
+    src/lan.h
+    src/tunnel.cpp
+    src/tunnel.h
+    src/alias.cpp
+    src/alias.h
     src/resource.h
 )
 
@@ -48,6 +58,7 @@ target_link_libraries(PortPeek PRIVATE
     shell32
     user32
     gdi32
+    gdiplus
     advapi32
 )
 

@@ -32,7 +32,7 @@
       <a href="../index.html" class="nav-brand">
         <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
         <span>PortPeek</span>
-        <span class="nav-badge-ver">v1.0</span>
+        <span class="nav-badge-ver">v0.2.0</span>
       </a>
 
       <nav class="nav-links" id="navLinks">
@@ -174,8 +174,8 @@
       <!-- PORTPEEK WIN32 POPUP TRAY MENU -->
       <div class="win11-tray-menu" id="win11TrayMenu">
         <div class="tray-menu-header">
-          <span>PortPeek</span>
-          <span class="active-count-tag" id="trayActiveCount">4 active</span>
+          <span>PortPeek (<span id="trayActiveCount">4 active</span>)</span>
+          <span class="flyout-live-dot"></span>
         </div>
 
         <!-- Dynamic Server Port Items -->
@@ -183,29 +183,41 @@
           <!-- Rendered by simulator.js -->
         </ul>
 
-        <div class="tray-menu-divider"></div>
-
-        <!-- Flyout Menus -->
+        <!-- System Background Submenu -->
         <ul class="tray-menu-list">
-          <li class="tray-menu-item has-sub">
-            <span>System & Background (24)</span>
-            <span class="sub-arrow">▶</span>
+          <li class="tray-menu-item sys-port-item has-sub">
+            <div class="menu-port-left">
+              <span class="menu-status-dot grey"></span>
+              <span class="menu-sys-title">System Background (23)</span>
+            </div>
+            <span class="menu-chevron">›</span>
             <ul class="flyout-submenu" id="flyoutSystemList">
               <!-- Rendered by simulator.js -->
             </ul>
           </li>
+        </ul>
 
-          <li class="tray-menu-item has-sub">
-            <span>Copy URL</span>
-            <span class="sub-arrow">▶</span>
+        <div class="tray-menu-divider"></div>
+
+        <!-- Action Submenus with Fluent Icons -->
+        <ul class="tray-menu-list">
+          <li class="tray-menu-item action-item has-sub">
+            <div class="menu-port-left">
+              <svg class="menu-action-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span>Copy URL</span>
+            </div>
+            <span class="menu-chevron">›</span>
             <ul class="flyout-submenu" id="flyoutCopyList">
               <!-- Rendered by simulator.js -->
             </ul>
           </li>
 
-          <li class="tray-menu-item has-sub">
-            <span>Developer Tools</span>
-            <span class="sub-arrow">▶</span>
+          <li class="tray-menu-item action-item has-sub">
+            <div class="menu-port-left">
+              <svg class="menu-action-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span>Developer Tools</span>
+            </div>
+            <span class="menu-chevron">›</span>
             <ul class="flyout-submenu">
               <li class="flyout-item" onclick="window.simulator.showToast('Terminal Opened', 'Spawned Windows Terminal at C:\\Projects\\PortPeek')">
                 <span>🖥️ Open in Windows Terminal</span>
@@ -222,17 +234,23 @@
             </ul>
           </li>
 
-          <li class="tray-menu-item has-sub">
-            <span style="color: #fca5a5;">Stop Process</span>
-            <span class="sub-arrow">▶</span>
+          <li class="tray-menu-item action-item stop-action has-sub">
+            <div class="menu-port-left">
+              <svg class="menu-action-icon red" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+              <span>Stop Process</span>
+            </div>
+            <span class="menu-chevron">›</span>
             <ul class="flyout-submenu" id="flyoutKillList">
               <!-- Rendered by simulator.js -->
             </ul>
           </li>
 
-          <li class="tray-menu-item has-sub">
-            <span>Preferences</span>
-            <span class="sub-arrow">▶</span>
+          <li class="tray-menu-item action-item has-sub">
+            <div class="menu-port-left">
+              <svg class="menu-action-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Preferences</span>
+            </div>
+            <span class="menu-chevron">›</span>
             <ul class="flyout-submenu">
               <li class="flyout-item" onclick="window.simulator.showToast('Preference Saved', 'Launch on Windows Startup: Enabled')">
                 <span>✓ Launch on Windows Startup</span>
@@ -243,21 +261,24 @@
               <li class="flyout-item" onclick="window.simulator.showToast('Preference Saved', 'Global Hotkey Win + Alt + P: Enabled')">
                 <span>✓ Hotkey: Win + Alt + P</span>
               </li>
-              <li class="flyout-item" onclick="window.simulator.showToast('Theme', 'Windows 11 Dark Acrylic active')">
-                <span>🎨 Dark Acrylic Theme</span>
-              </li>
             </ul>
           </li>
 
           <div class="tray-menu-divider"></div>
 
-          <li class="tray-menu-item" id="trayRefreshBtn">
-            <span>Refresh</span>
-            <span style="font-size:0.7rem; color:#64748b;">F5 / 1ms</span>
+          <li class="tray-menu-item util-item" id="trayRefreshBtn">
+            <div class="menu-port-left">
+              <svg class="menu-action-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <span>Refresh</span>
+            </div>
+            <span class="menu-shortcut">F5</span>
           </li>
-          <li class="tray-menu-item" onclick="document.getElementById('win11TrayMenu').classList.remove('active'); window.simulator.showToast('PortPeek', 'PortPeek is running silently in the background.')">
-            <span>Exit</span>
-            <span style="font-size:0.7rem; color:#64748b;">Minimize</span>
+          <li class="tray-menu-item util-item exit-action" onclick="document.getElementById('win11TrayMenu').classList.remove('active'); window.simulator.showToast('PortPeek', 'PortPeek is running silently in the background.')">
+            <div class="menu-port-left">
+              <svg class="menu-action-icon red" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+              <span>Exit</span>
+            </div>
+            <span class="menu-shortcut">Alt+F4</span>
           </li>
         </ul>
       </div>
@@ -452,7 +473,7 @@
           <a href="../index.html" class="nav-brand">
             <img src="../appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
             <span>PortPeek</span>
-            <span class="nav-badge-ver">v1.0</span>
+            <span class="nav-badge-ver">v0.2.0</span>
           </a>
           <p>Ultra-lightweight native Windows system-tray utility for local development servers. Built with Win32 &amp; C++17.</p>
           <div style="font-size:0.8rem; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">

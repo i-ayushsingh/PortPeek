@@ -39,13 +39,14 @@ if %ERRORLEVEL% NEQ 0 (
 
 :: 4. Compile C++ sources and link
 echo [*] Compiling C++ source files...
-cl.exe /nologo /O1 /GL /Gy /EHsc /std:c++17 /utf-8 /W4 /WX- /I"src" ^
+cl.exe /nologo /O1 /MT /GL /Gy /EHsc /std:c++17 /utf-8 /W4 /WX- /I"src" ^
     src\main.cpp src\tray.cpp src\ports.cpp src\process.cpp src\probe.cpp src\theme.cpp src\config.cpp ^
+    src\qrcode.cpp src\qrcodegen.c src\lan.cpp src\tunnel.cpp src\alias.cpp ^
     res\resource.res ^
     /Fe:PortPeek.exe ^
     /link /NOLOGO /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF ^
     /MANIFEST:EMBED /MANIFESTINPUT:res\app.manifest ^
-    ws2_32.lib iphlpapi.lib psapi.lib dwmapi.lib uxtheme.lib comctl32.lib shell32.lib user32.lib gdi32.lib advapi32.lib
+    ws2_32.lib iphlpapi.lib psapi.lib dwmapi.lib uxtheme.lib comctl32.lib shell32.lib user32.lib gdi32.lib gdiplus.lib advapi32.lib
 
 if %ERRORLEVEL% EQU 0 (
     echo.

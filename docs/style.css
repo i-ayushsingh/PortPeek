@@ -495,21 +495,23 @@ kbd {
 
 /* Windows 11 Native Flyout Menu */
 .win-flyout-menu {
-  background: rgba(18, 18, 24, 0.92);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-flyout);
-  padding: 8px;
+  width: 360px;
+  background: rgba(26, 26, 30, 0.96);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 6px;
   margin-bottom: 14px;
   text-align: left;
   user-select: none;
 }
 
 [data-theme="light"] .win-flyout-menu {
-  background: rgba(255, 255, 255, 0.94);
-  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(248, 248, 250, 0.96);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
 }
 
 .flyout-header {
@@ -517,87 +519,141 @@ kbd {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px 6px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   margin-bottom: 4px;
 }
 
-.flyout-header-badge {
-  color: var(--accent-cyan);
-  font-weight: 800;
+.flyout-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
 }
 
 .flyout-list {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .flyout-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  border-radius: var(--radius-xs);
+  padding: 8px 10px;
+  border-radius: 6px;
   font-size: 0.88rem;
-  color: var(--text-primary);
+  color: #f1f5f9;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: all 0.1s ease;
 }
 
 .flyout-item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateX(2px);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme="light"] .flyout-item {
+  color: #0f172a;
 }
 
 [data-theme="light"] .flyout-item:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.flyout-port-info {
+.flyout-item-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
+.flyout-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.flyout-status-dot.green {
+  background: #22c55e;
+}
+
+.flyout-status-dot.grey {
+  background: #71717a;
+}
+
 .flyout-port-num {
-  font-family: var(--font-mono);
-  font-weight: 800;
-  color: var(--accent-cyan);
-  min-width: 48px;
-}
-
-.flyout-port-name {
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.flyout-port-meta {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.flyout-item-action {
-  color: var(--accent-cyan);
+  font-family: var(--font-sans);
   font-weight: 700;
+  font-size: 0.95rem;
+  color: #ffffff;
+  min-width: 44px;
+}
+
+[data-theme="light"] .flyout-port-num {
+  color: #0f172a;
+}
+
+.flyout-port-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.flyout-port-title {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+[data-theme="light"] .flyout-port-title {
+  color: #0f172a;
+}
+
+.flyout-port-sub {
+  font-size: 0.76rem;
+  color: #71717a;
+}
+
+.flyout-sys-title {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+[data-theme="light"] .flyout-sys-title {
+  color: #0f172a;
+}
+
+.flyout-icon {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.flyout-chevron {
+  font-size: 1rem;
+  color: #71717a;
+  line-height: 1;
+}
+
+.flyout-shortcut {
+  font-size: 0.78rem;
+  color: #71717a;
+  font-family: var(--font-sans);
 }
 
 .flyout-divider {
   height: 1px;
-  background: var(--border-subtle);
-  margin: 5px 6px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 4px 6px;
 }
 
-.flyout-item-sub {
-  color: var(--text-secondary);
-  font-size: 0.84rem;
-}
-
-.flyout-item-sub span:last-child {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+[data-theme="light"] .flyout-divider {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 /* Docked Mini Taskbar */

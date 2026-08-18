@@ -137,31 +137,40 @@
 
     if (activeServers.length === 0) {
       activeList.innerHTML = `
-        <li style="padding: 12px 14px; font-size: 0.8rem; color: #64748b; text-align: center; font-family: var(--font-main);">
-          No active localhost dev servers detected
+        <li style="padding: 12px 14px; font-size: 0.82rem; color: #71717a; text-align: center;">
+          No active dev servers detected
         </li>
       `;
     } else {
       let html = '';
       activeServers.forEach(srv => {
         html += `
-          <li class="tray-menu-item" data-port="${srv.port}" title="Click to open http://localhost:${srv.port}">
+          <li class="tray-menu-item dev-port-item" data-port="${srv.port}" title="Click to open ${srv.url}">
             <div class="menu-port-left">
-              <span class="menu-port-badge">${srv.port}</span>
-              <span class="menu-port-details">${escapeHtml(srv.name)} [${escapeHtml(srv.framework)}]</span>
+              <span class="menu-status-dot green"></span>
+              <span class="menu-port-num">${srv.port}</span>
+              <div class="menu-port-text">
+                <span class="menu-port-title">${escapeHtml(srv.name)}</span>
+                <span class="menu-port-sub">${escapeHtml(srv.exe)} • ${srv.memory}</span>
+              </div>
             </div>
-            <span class="menu-port-mem">${srv.memory}</span>
+            <span class="menu-chevron">›</span>
           </li>
         `;
       });
 
-      // 1-Click Open All Item
-      html += `
-        <li class="tray-menu-item action-open-all" id="btnTrayOpenAll">
-          <span>⚡ Open All Active (${activeServers.length})</span>
-          <span style="font-size:0.75rem;">Tabs ↗</span>
-        </li>
-      `;
+      // 1-Click Open All Item if 2+ servers
+      if (activeServers.length >= 2) {
+        html += `
+          <li class="tray-menu-item action-open-all" id="btnTrayOpenAll" style="margin-top: 4px;">
+            <div class="menu-port-left">
+              <svg class="menu-action-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              <span style="font-weight:600;">Open All Active (${activeServers.length})</span>
+            </div>
+            <span class="menu-shortcut">⚡</span>
+          </li>
+        `;
+      }
 
       activeList.innerHTML = html;
     }
@@ -434,7 +443,7 @@
         <div class="swagger-header">
           <div class="swagger-title">
             <span>FastAPI Swagger UI</span>
-            <span class="swagger-badge">v0.1.0</span>
+            <span class="swagger-badge">v0.2.0</span>
           </div>
           <span style="font-size:0.75rem; color:#94a3b8; font-family:var(--font-mono);">/openapi.json</span>
         </div>

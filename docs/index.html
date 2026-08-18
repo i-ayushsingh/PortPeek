@@ -30,7 +30,7 @@
       <a href="index.html" class="nav-brand">
         <img src="appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
         <span>PortPeek</span>
-        <span class="nav-badge-ver">v1.0</span>
+        <span class="nav-badge-ver">v0.2.0</span>
       </a>
 
       <nav class="nav-links" id="navLinks">
@@ -62,7 +62,7 @@
       <div class="container">
         <div class="hero-pill">
           <span class="hero-pill-dot"></span>
-          <span>Native Windows 11 &amp; 10 Utility • Version 1.0.0</span>
+          <span>Native Windows 11 &amp; 10 Utility • Version 0.2.0</span>
         </div>
 
         <h1 class="hero-title">
@@ -115,75 +115,102 @@
           <!-- Windows 11 PortPeek Native Menu -->
           <div class="win-flyout-menu" id="heroFlyoutMenu">
             <div class="flyout-header">
-              <span>PortPeek</span>
-              <span class="flyout-header-badge">4 active</span>
+              <span>PortPeek (1 active)</span>
+              <span class="flyout-live-dot"></span>
             </div>
 
             <ul class="flyout-list">
-              <li class="flyout-item" data-port="3000" data-url="http://localhost:3000" data-name="Next.js">
-                <div class="flyout-port-info">
-                  <span class="flyout-port-num">3000</span>
-                  <span class="flyout-port-name">my-app</span>
-                  <span class="flyout-port-meta">[Next.js] (48 MB)</span>
+              <li class="flyout-item dev-port-item" data-port="5500" data-url="http://localhost:5500" data-name="VS Code Live Server">
+                <div class="flyout-item-left">
+                  <span class="flyout-dot active"></span>
+                  <span class="flyout-port-num">5500</span>
+                  <div class="flyout-port-text">
+                    <span class="flyout-port-title">VS Code Live Server <span style="font-size:0.75rem; color:#22c55e; font-weight:normal;">(2ms)</span></span>
+                    <span class="flyout-port-sub">Code.exe • 331 MB</span>
+                  </div>
                 </div>
+                <span class="flyout-chevron">›</span>
               </li>
 
-              <li class="flyout-item" data-port="5173" data-url="http://localhost:5173" data-name="Vite">
-                <div class="flyout-port-info">
-                  <span class="flyout-port-num">5173</span>
-                  <span class="flyout-port-name">dashboard</span>
-                  <span class="flyout-port-meta">[Vite] (34 MB)</span>
+              <li class="flyout-item sys-item" id="heroSysBtn">
+                <div class="flyout-item-left">
+                  <span class="flyout-dot sys"></span>
+                  <span class="flyout-sys-title">System Background (23)</span>
                 </div>
-              </li>
-
-              <li class="flyout-item" data-port="8000" data-url="http://localhost:8000" data-name="FastAPI">
-                <div class="flyout-port-info">
-                  <span class="flyout-port-num">8000</span>
-                  <span class="flyout-port-name">api-service</span>
-                  <span class="flyout-port-meta">[FastAPI] (28 MB)</span>
-                </div>
-              </li>
-
-              <li class="flyout-item" data-port="11434" data-url="http://localhost:11434" data-name="Ollama">
-                <div class="flyout-port-info">
-                  <span class="flyout-port-num">11434</span>
-                  <span class="flyout-port-name">llama3</span>
-                  <span class="flyout-port-meta">[Ollama] (1.2 GB)</span>
-                </div>
+                <span class="flyout-chevron">›</span>
               </li>
 
               <li class="flyout-divider"></li>
 
-              <li class="flyout-item flyout-item-action" id="heroOpenAllBtn">
-                <span>⚡ Open All Active (4)</span>
+              <li class="flyout-item action-item" id="heroCopyUrlBtn">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  <span>Copy URL</span>
+                </div>
+              </li>
+
+              <li class="flyout-item action-item" id="heroPhoneBtn">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  <span>Test on Phone (QR Code)</span>
+                </div>
+                <span class="flyout-chevron">›</span>
+              </li>
+
+              <li class="flyout-item action-item" id="heroTunnelBtn">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span>Public Tunnel (Cloudflare)</span>
+                </div>
+                <span class="flyout-chevron">›</span>
+              </li>
+
+              <li class="flyout-item action-item" id="heroDevToolsBtn">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  <span>Developer Tools</span>
+                </div>
+                <span class="flyout-chevron">›</span>
+              </li>
+
+              <li class="flyout-item action-item stop-action">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+                  <span>Stop Process / Free Port</span>
+                </div>
+                <span class="flyout-chevron">›</span>
+              </li>
+
+              <li class="flyout-item action-item">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8M12 18v4M4.93 4.93l5.66 5.66M13.41 13.41l5.66 5.66M2 12h8M18 12h4M4.93 19.07l5.66-5.66M13.41 10.59l5.66-5.66"/></svg>
+                  <span>Port Aliases (.portpeek)</span>
+                </div>
+                <span class="flyout-chevron">›</span>
+              </li>
+
+              <li class="flyout-item action-item">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <span>Preferences</span>
+                </div>
+                <span class="flyout-chevron">›</span>
               </li>
 
               <li class="flyout-divider"></li>
 
-              <li class="flyout-item flyout-item-sub">
-                <span>System &amp; Background (24)</span>
-                <span>▶</span>
+              <li class="flyout-item util-item" id="heroRefreshBtn">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                  <span>Refresh</span>
+                </div>
               </li>
 
-              <li class="flyout-item flyout-item-sub">
-                <span>Copy URL</span>
-                <span>▶</span>
-              </li>
-
-              <li class="flyout-item flyout-item-sub">
-                <span>Stop Process</span>
-                <span>▶</span>
-              </li>
-
-              <li class="flyout-divider"></li>
-
-              <li class="flyout-item flyout-item-sub" id="heroRefreshBtn">
-                <span>Refresh</span>
-                <span style="font-family: var(--font-mono); font-size: 0.72rem;">0.8ms</span>
-              </li>
-
-              <li class="flyout-item flyout-item-sub" id="heroExitBtn">
-                <span>Exit</span>
+              <li class="flyout-item util-item exit-action" id="heroExitBtn">
+                <div class="flyout-item-left">
+                  <svg class="flyout-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                  <span>Exit</span>
+                </div>
               </li>
             </ul>
           </div>
@@ -340,33 +367,33 @@
 
         <div class="features-grid">
           <div class="feature-box">
-            <div class="feat-tag">Discovery</div>
-            <h3 class="feat-title">Local Port Discovery</h3>
-            <p class="feat-desc">Queries listening IPv4 and IPv6 TCP sockets in sub-2ms without launching heavy background processes.</p>
+            <div class="feat-tag">Mobile Testing</div>
+            <h3 class="feat-title">📱 Test on Phone (QR Code)</h3>
+            <p class="feat-desc">Instantly test localhost web apps on your phone over local Wi-Fi by scanning a native vector QR code.</p>
           </div>
 
           <div class="feature-box">
-            <div class="feat-tag">Intelligence</div>
-            <h3 class="feat-title">Process &amp; RAM Detection</h3>
-            <p class="feat-desc">Identifies process executable names and real-time working set memory footprint without requiring administrator rights.</p>
+            <div class="feat-tag">Sharing</div>
+            <h3 class="feat-title">🌐 One-Click Public Tunnel</h3>
+            <p class="feat-desc">Bridge localhost to a temporary public Cloudflare or Ngrok URL to share live previews with clients or teammates.</p>
           </div>
 
           <div class="feature-box">
-            <div class="feat-tag">Stack Heuristics</div>
-            <h3 class="feat-title">Framework Detection</h3>
-            <p class="feat-desc">Recognizes Next.js, Vite, FastAPI, Django, Spring Boot, Ollama, Docker, and Live Server from command line context.</p>
+            <div class="feat-tag">Recovery</div>
+            <h3 class="feat-title">⚡ Free Up Port (EADDRINUSE)</h3>
+            <p class="feat-desc">Dedicated stuck port resolver to select any port and terminate the orphaned background process holding it hostage.</p>
           </div>
 
           <div class="feature-box">
-            <div class="feat-tag">Navigation</div>
-            <h3 class="feat-title">One-Click Localhost</h3>
-            <p class="feat-desc">Click any port to immediately launch <code>http://localhost:&lt;port&gt;</code> or <code>https://</code> in your default browser.</p>
+            <div class="feat-tag">Diagnostics</div>
+            <h3 class="feat-title">⏱️ Real-Time Health &amp; Latency</h3>
+            <p class="feat-desc">Subtle status dots and live round-trip millisecond latency meters showing if your backend is fast, slow, or hung.</p>
           </div>
 
           <div class="feature-box">
-            <div class="feat-tag">Control</div>
-            <h3 class="feat-title">Process Stopper</h3>
-            <p class="feat-desc">Safely terminate stuck or zombie servers holding ports hostage directly from the tray without opening Task Manager.</p>
+            <div class="feat-tag">Customization</div>
+            <h3 class="feat-title">📌 Port Aliases (.portpeek)</h3>
+            <p class="feat-desc">Pin and label database or microservice ports (e.g. 5432 ➔ "Postgres DB", 11434 ➔ "Ollama LLM") via workspace config.</p>
           </div>
 
           <div class="feature-box">
@@ -503,7 +530,7 @@
           <a href="index.html" class="nav-brand">
             <img src="appicon.png" alt="PortPeek Logo" class="nav-logo-img" />
             <span>PortPeek</span>
-            <span class="nav-badge-ver">v1.0</span>
+            <span class="nav-badge-ver">v0.2.0</span>
           </a>
           <p>Ultra-lightweight native Windows system-tray utility for local development servers. Built with Win32 &amp; C++17.</p>
           <div style="font-size:0.8rem; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">
