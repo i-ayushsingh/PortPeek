@@ -38,8 +38,8 @@ jobs:
     - name: Build PortPeek Release Binary
       run: cmd /c build.bat
 
-    - name: Setup NSIS Compiler
-      uses: joncloud/action-setup-nsis@v1
+    - name: Install NSIS Compiler
+      run: choco install nsis -y
 
     - name: Build PortPeek NSIS Installer
       run: cmd /c build_installer.bat
